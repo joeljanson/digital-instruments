@@ -1,0 +1,8 @@
+.dropzone {
+	background-color: coral;
+	padding: 100px;
+
+	&.highlighted {
+		background-color: aliceblue;
+	}
+}
