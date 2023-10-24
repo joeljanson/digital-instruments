@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import AudioVideoDropzone from "../Common/AudioVideoDropzone";
 import {
+	Channel,
 	Delay,
 	FeedbackDelay,
 	Filter,
@@ -15,6 +16,9 @@ import {
 	now,
 } from "tone";
 import Keyboard from "../Common/Keyboard";
+import DelayEffect from "../Audio-routing/Effect-components/DelayEffect";
+import EffectsRack from "../Audio-routing/Effect-components/EffectsRack";
+import ReverbEffect from "../Audio-routing/Effect-components/ReverbEffect";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -47,7 +51,7 @@ const Divisions: React.FC = () => {
 		const settingsArray = [];
 
 		for (let i = 0; i < n; i++) {
-			const playbackRateOptions = [1, 1.5];
+			const playbackRateOptions = [1, 0.5];
 			const delayTimeOptions = ["8n", "16n", "8t", "4t", "4n"];
 			const filterTypeOptions = ["lowpass", "highpass"];
 
@@ -84,12 +88,34 @@ const Divisions: React.FC = () => {
 		return settingsArray;
 	};
 
+	const preloadAudio = () => {
+		const fileUrl = process.env.PUBLIC_URL + "/audio/test-audio.mp3";
+		const loadedBuffer = new ToneAudioBuffer({
+			url: fileUrl,
+			onload: () => {
+				console.log("buffer is loaded", loadedBuffer);
+				bufferRef.current = loadedBuffer;
+			},
+		});
+
+		const reversedBuffer = new ToneAudioBuffer({
+			url: fileUrl,
+			onload: () => {
+				console.log("buffer is loaded", reversedBuffer);
+				reversedBufferRef.current = reversedBuffer;
+			},
+		});
+	};
+
 	useEffect(() => {
-		const loadedSettings = generateSettings(24);
+		const loadedSettings = generateSettings(50);
+		preloadAudio();
 		console.log(loadedSettings);
 		const vibrolo = new Vibrato(0.4, 0.75);
-		const volume = new Volume(gainToDb(1)).toDestination();
-		new Keyboard((event) => {
+		const channel = new Channel(0);
+		channel.send("effectsRackIn");
+		const volume = new Volume(gainToDb(1)).connect(channel);
+		const keys = new Keyboard((event) => {
 			if (event.eventType === "noteon") {
 				console.log(event);
 				console.log(bufferRef.current);
@@ -116,6 +142,8 @@ const Divisions: React.FC = () => {
 					const player = new Player({
 						url: buffer,
 						playbackRate: currentLoadedSettings.playbackRate,
+						fadeIn: 0.01,
+						fadeOut: 0.01,
 						onstop: () => {
 							setTimeout(() => {
 								player.dispose();
@@ -128,7 +156,7 @@ const Divisions: React.FC = () => {
 					}).chain(reverb, delay, filter, vibrolo, volume);
 
 					const duration = player.buffer.duration;
-					const pieces = duration / 12;
+					const pieces = duration / keys.numberOfNotes();
 
 					let startOffset = pieces * event.note;
 					/* console.log("Startoffset is: ", startOffset);
@@ -139,11 +167,26 @@ const Divisions: React.FC = () => {
 					player.start(now(), startOffset, 1.5);
 				}
 			}
-		}, "qwerty");
+		}, "all");
+		console.log("Number of notes: ", keys.numberOfNotes());
 	}, []);
 
 	return (
 		<div>
+			<EffectsRack receive="effectsRackIn" send="effectsRackOut">
+				{[
+					<DelayEffect
+						effectInput="effectRack-0-in"
+						effectOutput="effectRack-0-out"
+						key="0"
+					/>,
+					<ReverbEffect
+						effectInput="effectRack-1-in"
+						effectOutput="effectRack-1-out"
+						key="1"
+					/>,
+				]}
+			</EffectsRack>
 			<AudioVideoDropzone onFileDrop={handleFileDrop} />
 		</div>
 	);

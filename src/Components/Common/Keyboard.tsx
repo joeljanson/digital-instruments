@@ -7,8 +7,8 @@ type HandleKeyboardAction = (action: KeyboardAction) => void;
 
 class Keyboard {
 	private midiKeys: number[];
-	private octaveKeys: { [key: number]: number };
-	private pressedKeys: number[];
+	/* 	private octaveKeys: { [key: number]: number };
+	 */ private pressedKeys: number[];
 	private octave: number;
 	private handleKeyboardAction: HandleKeyboardAction;
 
@@ -31,7 +31,7 @@ class Keyboard {
 			this.midiKeys = qwertyKeys;
 		}
 
-		this.octaveKeys = { 90: -12, 88: 12 };
+		/* this.octaveKeys = { 90: -12, 88: 12 }; */
 
 		this.pressedKeys = [];
 
@@ -53,11 +53,11 @@ class Keyboard {
 			this.handleKeyboardAction({ eventType: "noteon", note: pressedNote });
 		}
 
-		const octaveKey = event.keyCode;
+		/* const octaveKey = event.keyCode;
 		if (this.octaveKeys.hasOwnProperty(octaveKey)) {
 			const octaveShift = this.octaveKeys[octaveKey];
 			this.setOctave(this.octave + octaveShift);
-		}
+		} */
 	};
 
 	private handleKeyUp = (event: KeyboardEvent): void => {
@@ -73,6 +73,10 @@ class Keyboard {
 
 	private setOctave(octave: number): void {
 		this.octave = octave;
+	}
+
+	public numberOfNotes(): number {
+		return this.midiKeys.length;
 	}
 }
 
