@@ -59,7 +59,7 @@ const EffectsRack: React.FC<{
 		);
 	}, [children, receive]);
 
-	return <div>{effectComponents}</div>;
+	return <div className="module-area-wrapper">{effectComponents}</div>;
 };
 
 export default EffectsRack;

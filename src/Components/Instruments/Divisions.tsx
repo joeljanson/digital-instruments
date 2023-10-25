@@ -2,23 +2,17 @@ import React, { useEffect, useRef } from "react";
 import AudioVideoDropzone from "../Common/AudioVideoDropzone";
 import {
 	Channel,
-	Delay,
 	FeedbackDelay,
 	Filter,
 	Player,
 	Reverb,
 	ToneAudioBuffer,
-	ToneBufferSource,
 	Vibrato,
 	Volume,
 	gainToDb,
-	intervalToFrequencyRatio,
 	now,
 } from "tone";
-import Keyboard from "../Common/Keyboard";
-import DelayEffect from "../Audio-routing/Effect-components/DelayEffect";
-import EffectsRack from "../Audio-routing/Effect-components/EffectsRack";
-import ReverbEffect from "../Audio-routing/Effect-components/ReverbEffect";
+import { globalEmitter } from "../../App";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -108,14 +102,7 @@ const Divisions: React.FC = () => {
 	};
 
 	useEffect(() => {
-		const loadedSettings = generateSettings(50);
-		preloadAudio();
-		console.log(loadedSettings);
-		const vibrolo = new Vibrato(0.4, 0.75);
-		const channel = new Channel(0);
-		channel.send("effectsRackIn");
-		const volume = new Volume(gainToDb(1)).connect(channel);
-		const keys = new Keyboard((event) => {
+		globalEmitter.on("SEQUENCER_EVENT", (event) => {
 			if (event.eventType === "noteon") {
 				console.log(event);
 				console.log(bufferRef.current);
@@ -156,7 +143,7 @@ const Divisions: React.FC = () => {
 					}).chain(reverb, delay, filter, vibrolo, volume);
 
 					const duration = player.buffer.duration;
-					const pieces = duration / keys.numberOfNotes();
+					const pieces = duration / 34;
 
 					let startOffset = pieces * event.note;
 					/* console.log("Startoffset is: ", startOffset);
@@ -167,26 +154,20 @@ const Divisions: React.FC = () => {
 					player.start(now(), startOffset, 1.5);
 				}
 			}
-		}, "all");
-		console.log("Number of notes: ", keys.numberOfNotes());
+		});
+		const loadedSettings = generateSettings(50);
+		preloadAudio();
+		console.log(loadedSettings);
+		const vibrolo = new Vibrato(0.4, 0.75);
+		const channel = new Channel(0);
+		channel.send("effectsRackIn");
+		const volume = new Volume(gainToDb(1)).connect(channel);
+		/* const keys = new Keyboard((event) => {}, "all");
+		console.log("Number of notes: ", keys.numberOfNotes()); */
 	}, []);
 
 	return (
-		<div>
-			<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-				{[
-					<DelayEffect
-						effectInput="effectRack-0-in"
-						effectOutput="effectRack-0-out"
-						key="0"
-					/>,
-					<ReverbEffect
-						effectInput="effectRack-1-in"
-						effectOutput="effectRack-1-out"
-						key="1"
-					/>,
-				]}
-			</EffectsRack>
+		<div className="module-area-wrapper">
 			<AudioVideoDropzone onFileDrop={handleFileDrop} />
 		</div>
 	);
