@@ -13,6 +13,7 @@ import {
 	now,
 } from "tone";
 import { globalEmitter } from "../../App";
+import Keyboard from "../Common/Keyboard";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -22,6 +23,8 @@ const Divisions: React.FC = () => {
 		console.log("Received file in parent component:", file);
 		console.log("Received file URL in parent component:", fileUrl);
 
+		bufferRef.current?.dispose();
+		reversedBufferRef.current?.dispose();
 		const loadedBuffer = new ToneAudioBuffer({
 			url: fileUrl,
 			onload: () => {
@@ -102,11 +105,15 @@ const Divisions: React.FC = () => {
 	};
 
 	useEffect(() => {
+		const keyboard = new Keyboard((event) => {
+			/* console.log("event:", event); */
+		}, "all");
+
 		globalEmitter.on("SEQUENCER_EVENT", (event) => {
 			if (event.eventType === "noteon") {
-				console.log(event);
+				/* console.log(event);
 				console.log(bufferRef.current);
-				console.log(loadedSettings[event.note]);
+				console.log(loadedSettings[event.note]); */
 				if (bufferRef.current) {
 					const currentLoadedSettings = loadedSettings[event.note];
 
@@ -122,7 +129,7 @@ const Divisions: React.FC = () => {
 						"lowpass"
 					);
 
-					const buffer = currentLoadedSettings
+					const buffer = currentLoadedSettings.reversed
 						? bufferRef.current!
 						: reversedBufferRef.current!;
 

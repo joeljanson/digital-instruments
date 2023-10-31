@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Keyboard from "../Common/Keyboard";
 import { globalEmitter } from "../../App";
+import { Loop } from "tone";
 
 function SequencerArea() {
 	useEffect(() => {

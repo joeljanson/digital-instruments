@@ -1,16 +1,20 @@
 import React, { useEffect } from "react";
-import { useChannels, EffectProps } from "./BaseEffect";
-import { Distortion } from "tone";
+import { EffectProps } from "./BaseEffect";
+import { FeedbackDelay } from "tone";
+import { withBaseEffectInterface } from "./BaseEffectInterface";
 
-const DelayEffect: React.FC<EffectProps> = (props) => {
-	const { input, output } = useChannels(props);
+const DelayEffect: React.FC<EffectProps> = ({
+	effectInput,
+	effectOutput,
+	input,
+	output,
+}) => {
 	useEffect(() => {
-		//const feedback = new FeedbackDelay(0.3, 0.6);
-		const feedback = new Distortion(1.0);
+		const feedback = new FeedbackDelay(0.3, 0.6);
 		input?.chain(feedback, output!);
 	});
 
-	return <div>DELAY!{input?.name}</div>;
+	return <div>Delay!{input?.name}</div>;
 };
 
-export default DelayEffect;
+export default withBaseEffectInterface(DelayEffect);

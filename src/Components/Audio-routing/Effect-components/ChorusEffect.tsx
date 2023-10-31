@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { EffectProps } from "./BaseEffect";
-import { Reverb } from "tone";
+import { Chorus } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
 
-const ReverbEffect: React.FC<EffectProps> = ({
+const ChorusEffect: React.FC<EffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,
@@ -11,11 +11,11 @@ const ReverbEffect: React.FC<EffectProps> = ({
 }) => {
 	useEffect(() => {
 		//const feedback = new FeedbackDelay(0.3, 0.6);
-		const reverb = new Reverb(10);
-		input?.chain(reverb, output!);
+		const chorus = new Chorus(1.2, 4.5, 0.5).start();
+		input?.chain(chorus, output!);
 	});
 
-	return <div>Reverb!{input?.name}</div>;
+	return <div>Chorus!{input?.name}</div>;
 };
 
-export default withBaseEffectInterface(ReverbEffect);
+export default withBaseEffectInterface(ChorusEffect);

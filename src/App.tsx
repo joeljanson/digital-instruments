@@ -6,6 +6,8 @@ import SequencerArea from "./Components/Sequencers/SequenceArea";
 import EffectsRack from "./Components/Audio-routing/Effect-components/EffectsRack";
 import DelayEffect from "./Components/Audio-routing/Effect-components/DelayEffect";
 import ReverbEffect from "./Components/Audio-routing/Effect-components/ReverbEffect";
+import ChorusEffect from "./Components/Audio-routing/Effect-components/ChorusEffect";
+import DistortionEffect from "./Components/Audio-routing/Effect-components/DistortionEffect";
 
 export const globalEmitter = new Emitter();
 
@@ -40,18 +42,7 @@ function App() {
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
 				<Divisions></Divisions>
 				<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-					{[
-						<DelayEffect
-							effectInput="effectRack-0-in"
-							effectOutput="effectRack-0-out"
-							key="0"
-						/>,
-						<ReverbEffect
-							effectInput="effectRack-1-in"
-							effectOutput="effectRack-1-out"
-							key="1"
-						/>,
-					]}
+					{[<ChorusEffect key="1" />, <ReverbEffect key="2" />]}
 				</EffectsRack>
 			</header>
 		</div>

@@ -20,11 +20,19 @@ const EffectsRack: React.FC<{
 	>([]);
 
 	useEffect(() => {
+		let trueChildren = children; // Default to children
+
+		// Check if the children are wrapped in a single React.Fragment or div
+		if (React.isValidElement(children) && children.props.children) {
+			trueChildren = children.props.children;
+		}
 		const sendToFirstEffect = new Channel(0);
 		sendToFirstEffect.receive(receive);
 		sendToFirstEffect.send("effectRack-0-in");
 		const receiveFromLast = new Channel(0);
-		receiveFromLast.receive(`effectRack-${1}-out`);
+		const numberOfTrueChildren = React.Children.count(trueChildren);
+
+		receiveFromLast.receive(`effectRack-${numberOfTrueChildren - 1}-out`);
 
 		receiveFromLast.toDestination();
 	}, []);
