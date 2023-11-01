@@ -26,10 +26,10 @@ const EffectsRack: React.FC<{
 		if (React.isValidElement(children) && children.props.children) {
 			trueChildren = children.props.children;
 		}
-		const sendToFirstEffect = new Channel(0);
+		const sendToFirstEffect = new Channel({ volume: 0, channelCount: 2 });
 		sendToFirstEffect.receive(receive);
 		sendToFirstEffect.send("effectRack-0-in");
-		const receiveFromLast = new Channel(0);
+		const receiveFromLast = new Channel({ volume: 0, channelCount: 2 });
 		const numberOfTrueChildren = React.Children.count(trueChildren);
 
 		receiveFromLast.receive(`effectRack-${numberOfTrueChildren - 1}-out`);

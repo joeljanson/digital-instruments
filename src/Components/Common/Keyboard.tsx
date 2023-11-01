@@ -1,9 +1,6 @@
-type KeyboardAction = {
-	eventType: "noteon" | "noteoff";
-	note: number;
-};
+import { TriggerEvent } from "../Sequencers/Events";
 
-type HandleKeyboardAction = (action: KeyboardAction) => void;
+type HandleKeyboardAction = (action: TriggerEvent) => void;
 
 class Keyboard {
 	private midiKeys: number[];
@@ -42,7 +39,7 @@ class Keyboard {
 		this.handleKeyboardAction = handleKeyboardAction;
 	}
 
-	private handleKeyDown = (event: KeyboardEvent): void => {
+	public handleKeyDown = (event: KeyboardEvent): void => {
 		if (event.repeat) {
 			return;
 		}
@@ -50,7 +47,13 @@ class Keyboard {
 		if (key !== -1) {
 			const pressedNote = key + this.octave;
 			this.pressedKeys.push(pressedNote);
-			this.handleKeyboardAction({ eventType: "noteon", note: pressedNote });
+			this.handleKeyboardAction({
+				eventType: "noteOn",
+				note: pressedNote,
+				velocity: 0.5,
+				settings: { pan: -1 + Math.random() * 2 },
+			});
+			console.log("Triggers in keyboard");
 		}
 
 		/* const octaveKey = event.keyCode;
@@ -60,14 +63,17 @@ class Keyboard {
 		} */
 	};
 
-	private handleKeyUp = (event: KeyboardEvent): void => {
+	public handleKeyUp = (event: KeyboardEvent): void => {
 		const key = this.midiKeys.indexOf(event.keyCode);
 		if (key !== -1) {
 			const pressedNote = key + this.octave;
 			this.pressedKeys = this.pressedKeys.filter(
 				(note) => note !== pressedNote
 			);
-			this.handleKeyboardAction({ eventType: "noteoff", note: pressedNote });
+			this.handleKeyboardAction({
+				eventType: "noteOff",
+				note: pressedNote,
+			});
 		}
 	};
 

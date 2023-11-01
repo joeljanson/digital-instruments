@@ -14,11 +14,11 @@ export function useChannel(props: ChannelProps) {
 	useEffect(() => {
 		// Setup Channels
 		const setupChannels = () => {
-			const inputChannel = new Channel();
+			const inputChannel = new Channel({ volume: 0, channelCount: 2 });
 			inputChannel.receive(`${props.input}`);
 			setInput(inputChannel);
 
-			const outputChannel = new Channel();
+			const outputChannel = new Channel({ volume: 0, channelCount: 2 });
 			outputChannel.send(`${props.output}`);
 			setOutput(outputChannel);
 		};

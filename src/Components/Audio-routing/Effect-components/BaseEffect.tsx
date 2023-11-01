@@ -43,15 +43,15 @@ export function useChannels({ effectInput, effectOutput }: EffectProps) {
 		// Setup Channels
 		console.log("Sets up channels", effectInput, effectOutput);
 		const setupChannels = () => {
-			const inputChannel = new Channel();
+			const inputChannel = new Channel({ volume: 0, channelCount: 2 });
 			inputChannel.receive(`${effectInput}`);
 			inputRef.current = inputChannel; // Use ref here
 
-			const outputChannel = new Channel();
+			const outputChannel = new Channel({ volume: 0, channelCount: 2 });
 			outputChannel.send(`${effectOutput}`);
 			outputRef.current = outputChannel; // Use ref here
 
-			const bypassChannel = new Channel();
+			const bypassChannel = new Channel({ volume: 0, channelCount: 2 });
 			bypassChannel.volume.value = -Infinity;
 			bypassChannel.receive(`${effectInput}`);
 			bypassChannel.send(`${effectOutput}`);

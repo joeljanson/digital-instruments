@@ -4,6 +4,8 @@ import {
 	Channel,
 	FeedbackDelay,
 	Filter,
+	PanVol,
+	Panner,
 	Player,
 	Reverb,
 	ToneAudioBuffer,
@@ -14,6 +16,7 @@ import {
 } from "tone";
 import { globalEmitter } from "../../App";
 import Keyboard from "../Common/Keyboard";
+import { TriggerEvent } from "../Sequencers/Events";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -105,17 +108,17 @@ const Divisions: React.FC = () => {
 	};
 
 	useEffect(() => {
-		const keyboard = new Keyboard((event) => {
-			/* console.log("event:", event); */
-		}, "all");
-
-		globalEmitter.on("SEQUENCER_EVENT", (event) => {
-			if (event.eventType === "noteon") {
+		console.log("Use effect is run in division");
+		globalEmitter.on("SEQUENCER_EVENT", (event: TriggerEvent) => {
+			if (event.eventType === "noteOn") {
+				console.log(event);
 				/* console.log(event);
 				console.log(bufferRef.current);
 				console.log(loadedSettings[event.note]); */
 				if (bufferRef.current) {
 					const currentLoadedSettings = loadedSettings[event.note];
+
+					const panner = new Panner(event.settings?.pan ?? 0);
 
 					const delay = new FeedbackDelay(currentLoadedSettings.delay.time);
 					delay.wet.value = currentLoadedSettings.delay.mix;
@@ -144,10 +147,11 @@ const Divisions: React.FC = () => {
 								delay.dispose();
 								reverb.dispose();
 								filter.dispose();
+								panner.dispose();
 								console.log("Things disposed!");
 							}, 10000);
 						},
-					}).chain(reverb, delay, filter, vibrolo, volume);
+					}).chain(reverb, delay, filter, panner, vibrolo, volume);
 
 					const duration = player.buffer.duration;
 					const pieces = duration / 34;
@@ -166,9 +170,9 @@ const Divisions: React.FC = () => {
 		preloadAudio();
 		console.log(loadedSettings);
 		const vibrolo = new Vibrato(0.4, 0.75);
-		const channel = new Channel(0);
+		const channel = new Channel({ volume: 0, channelCount: 2 });
 		channel.send("effectsRackIn");
-		const volume = new Volume(gainToDb(1)).connect(channel);
+		const volume = new Volume(0).connect(channel);
 		/* const keys = new Keyboard((event) => {}, "all");
 		console.log("Number of notes: ", keys.numberOfNotes()); */
 	}, []);
