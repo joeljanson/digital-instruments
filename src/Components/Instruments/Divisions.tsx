@@ -109,9 +109,8 @@ const Divisions: React.FC = () => {
 
 	useEffect(() => {
 		console.log("Use effect is run in division");
-		globalEmitter.on("SEQUENCER_EVENT", (event: TriggerEvent) => {
+		globalEmitter.on("SEQUENCER_EVENT", async (event: TriggerEvent) => {
 			if (event.eventType === "noteOn") {
-				console.log(event);
 				/* console.log(event);
 				console.log(bufferRef.current);
 				console.log(loadedSettings[event.note]); */
@@ -162,7 +161,13 @@ const Divisions: React.FC = () => {
 					console.log("Plater duration is: ", pieces / playbackRate); */
 					//player.fadeIn = 0.1;
 					//player.fadeOut = 0.1;
-					player.start(now(), startOffset, 1.5);
+					//player.start(now(), startOffset, 1.5);
+					player.start(now(), startOffset);
+					player.loop = true;
+					player.loopStart = startOffset;
+					player.loopEnd = startOffset + 1.5;
+					await event.promise;
+					player.stop(now());
 				}
 			}
 		});

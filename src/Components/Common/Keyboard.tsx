@@ -1,13 +1,15 @@
 import { TriggerEvent } from "../Sequencers/Events";
 
-type HandleKeyboardAction = (action: TriggerEvent) => void;
+type HandleKeyboardAction = (
+	action: TriggerEvent & { promise?: Promise<void> }
+) => Promise<void>;
 
 class Keyboard {
 	private midiKeys: number[];
-	/* 	private octaveKeys: { [key: number]: number };
-	 */ private pressedKeys: number[];
+	private pressedKeys: number[];
 	private octave: number;
 	private handleKeyboardAction: HandleKeyboardAction;
+	private keyPromises: Map<number, () => void> = new Map();
 
 	constructor(
 		handleKeyboardAction: HandleKeyboardAction,
@@ -28,8 +30,6 @@ class Keyboard {
 			this.midiKeys = qwertyKeys;
 		}
 
-		/* this.octaveKeys = { 90: -12, 88: 12 }; */
-
 		this.pressedKeys = [];
 
 		this.octave = 0;
@@ -47,20 +47,21 @@ class Keyboard {
 		if (key !== -1) {
 			const pressedNote = key + this.octave;
 			this.pressedKeys.push(pressedNote);
+
+			const promise = new Promise<void>((resolve) => {
+				this.keyPromises.set(pressedNote, resolve);
+			});
+
 			this.handleKeyboardAction({
 				eventType: "noteOn",
 				note: pressedNote,
 				velocity: 0.5,
 				settings: { pan: -1 + Math.random() * 2 },
+				promise: promise,
+			}).then(() => {
+				console.log("Triggers in keyboard");
 			});
-			console.log("Triggers in keyboard");
 		}
-
-		/* const octaveKey = event.keyCode;
-		if (this.octaveKeys.hasOwnProperty(octaveKey)) {
-			const octaveShift = this.octaveKeys[octaveKey];
-			this.setOctave(this.octave + octaveShift);
-		} */
 	};
 
 	public handleKeyUp = (event: KeyboardEvent): void => {
@@ -70,6 +71,14 @@ class Keyboard {
 			this.pressedKeys = this.pressedKeys.filter(
 				(note) => note !== pressedNote
 			);
+
+			// Resolve the promise for the "noteOn" of this note
+			const resolve = this.keyPromises.get(pressedNote);
+			if (resolve) {
+				resolve();
+				this.keyPromises.delete(pressedNote);
+			}
+
 			this.handleKeyboardAction({
 				eventType: "noteOff",
 				note: pressedNote,
