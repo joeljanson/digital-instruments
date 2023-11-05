@@ -15,12 +15,15 @@ import {
 	now,
 } from "tone";
 import { globalEmitter } from "../../App";
-import Keyboard from "../Common/Keyboard";
+import Keyboard from "../Sequencers/Keyboard";
 import { TriggerEvent } from "../Sequencers/Events";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const reversedBufferRef = useRef<ToneAudioBuffer | null>(null);
+
+	/* const availableDelays = useRef<Array<FeedbackDelay>>([]);
+	const unavailableDelays = useRef<Array<FeedbackDelay>>([]); */
 
 	const handleFileDrop = (file: File, fileUrl: string) => {
 		console.log("Received file in parent component:", file);
@@ -107,13 +110,19 @@ const Divisions: React.FC = () => {
 		});
 	};
 
+	/* const setupDelays = () => {
+		for (let i = 0; i < 10; i++) {
+			const feedbackDelay = new FeedbackDelay(1, 0.5);
+			availableDelays.current?.push(feedbackDelay);
+		}
+	}; */
+
 	useEffect(() => {
 		console.log("Use effect is run in division");
 		globalEmitter.on("SEQUENCER_EVENT", async (event: TriggerEvent) => {
 			if (event.eventType === "noteOn") {
-				/* console.log(event);
-				console.log(bufferRef.current);
-				console.log(loadedSettings[event.note]); */
+				const startTime = event.startTime ?? now();
+
 				if (bufferRef.current) {
 					const currentLoadedSettings = loadedSettings[event.note];
 
@@ -143,7 +152,6 @@ const Divisions: React.FC = () => {
 						onstop: () => {
 							setTimeout(() => {
 								player.dispose();
-								delay.dispose();
 								reverb.dispose();
 								filter.dispose();
 								panner.dispose();
@@ -151,6 +159,8 @@ const Divisions: React.FC = () => {
 							}, 10000);
 						},
 					}).chain(reverb, delay, filter, panner, vibrolo, volume);
+					//}).chain(filter, panner, vibrolo, volume);
+					//}).chain(vibrolo, volume);
 
 					const duration = player.buffer.duration;
 					const pieces = duration / 34;
@@ -162,17 +172,24 @@ const Divisions: React.FC = () => {
 					//player.fadeIn = 0.1;
 					//player.fadeOut = 0.1;
 					//player.start(now(), startOffset, 1.5);
-					player.start(now(), startOffset);
-					player.loop = true;
-					player.loopStart = startOffset;
-					player.loopEnd = startOffset + 1.5;
-					await event.promise;
-					player.stop(now());
+
+					console.log(startTime);
+					if (event.duration) {
+						player.start(startTime, startOffset, event.duration);
+					} else {
+						player.start(startTime, startOffset);
+						player.loop = true;
+						player.loopStart = startOffset;
+						player.loopEnd = startOffset + 1.5;
+						await event.promise;
+						player.stop(now());
+					}
 				}
 			}
 		});
 		const loadedSettings = generateSettings(50);
-		preloadAudio();
+		/* 		setupDelays();
+		 */ preloadAudio();
 		console.log(loadedSettings);
 		const vibrolo = new Vibrato(0.4, 0.75);
 		const channel = new Channel({ volume: 0, channelCount: 2 });

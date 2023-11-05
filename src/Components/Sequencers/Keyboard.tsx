@@ -1,4 +1,4 @@
-import { TriggerEvent } from "../Sequencers/Events";
+import { TriggerEvent } from "./Events";
 
 type HandleKeyboardAction = (
 	action: TriggerEvent & { promise?: Promise<void> }

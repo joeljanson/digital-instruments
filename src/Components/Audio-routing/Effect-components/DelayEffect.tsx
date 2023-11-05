@@ -12,7 +12,7 @@ const DelayEffect: React.FC<EffectProps> = ({
 	useEffect(() => {
 		const feedback = new FeedbackDelay(0.3, 0.6);
 		input?.chain(feedback, output!);
-	});
+	}, [input, output]);
 
 	return <div>Delay!{input?.name}</div>;
 };

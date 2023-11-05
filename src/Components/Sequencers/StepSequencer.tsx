@@ -1,23 +1,31 @@
 import React, { useEffect } from "react";
 import Keyboard from "./Keyboard";
 import { globalEmitter } from "../../App";
-import { Loop } from "tone";
+import { Loop, Time, Transport } from "tone";
 import { TriggerEvent } from "./Events";
 
-function SequencerArea() {
+function StepSequencer() {
 	useEffect(() => {
 		console.log("sequence area is rerendered?");
-		/* const keys = new Keyboard((event: TriggerEvent) => {
-			if (event.eventType === "noteOn") {
-				globalEmitter.emit("SEQUENCER_EVENT", event);
-			} else if (event.eventType === "noteOff") {
-				//Emit stop
-			}
-		}, "all"); */
-
 		const keys = new Keyboard(async (event: TriggerEvent) => {
 			console.log("Event is: ", event);
-			globalEmitter.emit("SEQUENCER_EVENT", event);
+			const nextSubdivision =
+				Transport.nextSubdivision("4n") > 0
+					? Transport.nextSubdivision("4n") - Time("4n").toSeconds()
+					: Transport.nextSubdivision("4n");
+
+			const loop = new Loop((time) => {
+				const eventWithDuration = {
+					...event,
+					duration: "2n",
+					startTime: time,
+					//settings: { pan: -1 + Math.random() * 2 },
+				};
+				globalEmitter.emit("SEQUENCER_EVENT", eventWithDuration);
+			}, "2n").start();
+			Transport.start();
+			await event.promise;
+			loop.stop();
 		}, "all");
 
 		// Cleanup function to remove the event listeners
@@ -30,4 +38,4 @@ function SequencerArea() {
 	return <div className="module-area-wrapper">Sequencer area</div>;
 }
 
-export default SequencerArea;
+export default StepSequencer;

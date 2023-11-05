@@ -43,6 +43,7 @@ export function useChannels({ effectInput, effectOutput }: EffectProps) {
 		// Setup Channels
 		console.log("Sets up channels", effectInput, effectOutput);
 		const setupChannels = () => {
+			console.log("Sets up channels again?");
 			const inputChannel = new Channel({ volume: 0, channelCount: 2 });
 			inputChannel.receive(`${effectInput}`);
 			inputRef.current = inputChannel; // Use ref here

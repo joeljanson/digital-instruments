@@ -13,7 +13,7 @@ const ReverbEffect: React.FC<EffectProps> = ({
 		//const feedback = new FeedbackDelay(0.3, 0.6);
 		const reverb = new Reverb(10);
 		input?.chain(reverb, output!);
-	});
+	}, [input, output]);
 
 	return <div>Reverb!{input?.name}</div>;
 };

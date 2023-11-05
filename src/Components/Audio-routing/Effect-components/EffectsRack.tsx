@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DelayEffect from "./DelayEffect";
-import ReverbEffect from "./ReverbEffect";
 import { Channel } from "tone";
-import { useChannel, ChannelProps } from "./BaseChannel";
 
 type EffectComponent = React.ReactElement<{
 	effectIndex?: string;

@@ -8,6 +8,8 @@ import DelayEffect from "./Components/Audio-routing/Effect-components/DelayEffec
 import ReverbEffect from "./Components/Audio-routing/Effect-components/ReverbEffect";
 import ChorusEffect from "./Components/Audio-routing/Effect-components/ChorusEffect";
 import DistortionEffect from "./Components/Audio-routing/Effect-components/DistortionEffect";
+import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
+import StepSequencer from "./Components/Sequencers/StepSequencer";
 
 export const globalEmitter = new Emitter();
 
@@ -39,10 +41,11 @@ function App() {
 		<div className="App" onClick={startTone}>
 			<header className="App-header">
 				<SequencerArea></SequencerArea>
+				{/* <StepSequencer></StepSequencer> */}
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
 				<Divisions></Divisions>
 				<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-					{[<ChorusEffect key="1" />, <ReverbEffect key="2" />]}
+					{[<ChorusEffect key="1" />, <ConvolverEffect key="2" />]}
 				</EffectsRack>
 			</header>
 		</div>
