@@ -45,7 +45,11 @@ function App() {
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
 				<Divisions></Divisions>
 				<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-					{[<ChorusEffect key="1" />, <ConvolverEffect key="2" />]}
+					{[
+						<DistortionEffect key="3" />,
+						<ChorusEffect key="1" />,
+						<ConvolverEffect key="2" />,
+					]}
 				</EffectsRack>
 			</header>
 		</div>

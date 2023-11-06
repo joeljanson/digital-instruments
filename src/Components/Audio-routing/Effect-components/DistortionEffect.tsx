@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { EffectProps } from "./BaseEffect";
-import { Distortion } from "tone";
+import { Chebyshev, Distortion, FrequencyShifter } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
 
 const DistortionEffect: React.FC<EffectProps> = ({
@@ -12,7 +12,9 @@ const DistortionEffect: React.FC<EffectProps> = ({
 	useEffect(() => {
 		if (output && input) {
 			const distortion = new Distortion(0.6);
-			input.chain(distortion, output);
+			const cheby = new Chebyshev(11);
+			const freqShift = new FrequencyShifter(50);
+			input.chain(freqShift, cheby, output);
 		}
 	}, [input, output]);
 
