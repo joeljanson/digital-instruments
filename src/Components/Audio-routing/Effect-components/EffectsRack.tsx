@@ -30,8 +30,7 @@ const EffectsRack: React.FC<{
 		const numberOfTrueChildren = React.Children.count(trueChildren);
 
 		receiveFromLast.receive(`effectRack-${numberOfTrueChildren - 1}-out`);
-
-		receiveFromLast.toDestination();
+		receiveFromLast.send(send);
 	}, []);
 
 	useEffect(() => {
@@ -64,7 +63,7 @@ const EffectsRack: React.FC<{
 		);
 	}, [children, receive]);
 
-	return <div className="module-area-wrapper">{effectComponents}</div>;
+	return <div className="submodule-area-wrapper">{effectComponents}</div>;
 };
 
 export default EffectsRack;

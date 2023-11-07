@@ -158,7 +158,7 @@ const Divisions: React.FC = () => {
 								console.log("Things disposed!");
 							}, 10000);
 						},
-					}).chain(reverb, delay, filter, panner, vibrolo, volume);
+					}).chain(reverb, delay, filter, panner, volume);
 					//}).chain(filter, panner, vibrolo, volume);
 					//}).chain(vibrolo, volume);
 
@@ -191,7 +191,7 @@ const Divisions: React.FC = () => {
 		/* 		setupDelays();
 		 */ preloadAudio();
 		console.log(loadedSettings);
-		const vibrolo = new Vibrato(0.4, 0.75);
+		/* const vibrolo = new Vibrato(0.4, 0.75); */
 		const channel = new Channel({ volume: 0, channelCount: 2 });
 		channel.send("effectsRackIn");
 		const volume = new Volume(0).connect(channel);
@@ -200,7 +200,7 @@ const Divisions: React.FC = () => {
 	}, []);
 
 	return (
-		<div className="module-area-wrapper">
+		<div className="module-area-wrapper instrument">
 			<AudioVideoDropzone onFileDrop={handleFileDrop} />
 		</div>
 	);

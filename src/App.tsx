@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+import "./App.scss";
 import Divisions from "./Components/Instruments/Divisions";
 import { Emitter, context, start } from "tone";
 import SequencerArea from "./Components/Sequencers/SequenceArea";
@@ -10,6 +10,7 @@ import ChorusEffect from "./Components/Audio-routing/Effect-components/ChorusEff
 import DistortionEffect from "./Components/Audio-routing/Effect-components/DistortionEffect";
 import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
 import StepSequencer from "./Components/Sequencers/StepSequencer";
+import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
 
 export const globalEmitter = new Emitter();
 
@@ -44,13 +45,15 @@ function App() {
 				{/* <StepSequencer></StepSequencer> */}
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
 				<Divisions></Divisions>
-				<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-					{[
-						<DistortionEffect key="3" />,
-						<ChorusEffect key="1" />,
-						<ConvolverEffect key="2" />,
-					]}
-				</EffectsRack>
+				<div className="module-area-wrapper">
+					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
+						{[<ConvolverEffect key="2" />]}
+					</EffectsRack>
+					<TapeMachine
+						receive="effectsRackOut"
+						send="tapeMachineOut"
+					></TapeMachine>
+				</div>
 			</header>
 		</div>
 	);

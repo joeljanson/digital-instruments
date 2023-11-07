@@ -1,0 +1,21 @@
+.tape-machine {
+	display: flex;
+	flex-direction: column;
+	button {
+		margin-top: 10px;
+		border: none;
+		padding: 10px;
+		font: inherit;
+		font-size: 15px;
+		cursor: pointer;
+		outline: inherit;
+	}
+	button.unselected {
+		background-color: rgb(60, 60, 60);
+		color: rgb(93, 93, 93);
+	}
+	button.selected {
+		background-color: rgb(217, 217, 217);
+		color: rgb(177, 101, 101);
+	}
+}
