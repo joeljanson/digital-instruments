@@ -3,7 +3,7 @@ import "./AudioVideoDropzone.scss";
 
 // Define the props interface
 interface AudioVideoDropzoneProps {
-	onFileDrop: (file: File, fileUrl: string) => void;
+	onFileDrop: (fileUrl: string) => void;
 }
 
 const AudioVideoDropzone: React.FC<AudioVideoDropzoneProps> = ({
@@ -46,7 +46,7 @@ const AudioVideoDropzone: React.FC<AudioVideoDropzoneProps> = ({
 			const fileUrl = URL.createObjectURL(file);
 
 			// Call the callback function passed as a prop
-			onFileDrop(file, fileUrl);
+			onFileDrop(fileUrl);
 
 			console.log("File URL:", fileUrl);
 		}

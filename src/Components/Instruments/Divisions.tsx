@@ -8,6 +8,7 @@ import {
 	Panner,
 	Player,
 	Reverb,
+	Time,
 	ToneAudioBuffer,
 	Vibrato,
 	Volume,
@@ -17,6 +18,7 @@ import {
 import { globalEmitter } from "../../App";
 import Keyboard from "../Sequencers/Keyboard";
 import { TriggerEvent } from "../Sequencers/Events";
+import BufferSources from "../Common/BufferSources";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -25,14 +27,13 @@ const Divisions: React.FC = () => {
 	/* const availableDelays = useRef<Array<FeedbackDelay>>([]);
 	const unavailableDelays = useRef<Array<FeedbackDelay>>([]); */
 
-	const handleFileDrop = (file: File, fileUrl: string) => {
-		console.log("Received file in parent component:", file);
-		console.log("Received file URL in parent component:", fileUrl);
+	const bufferSourceUpdated = (bufferUrl: string | ToneAudioBuffer) => {
+		console.log("Received file URL in parent component:", bufferUrl);
 
 		bufferRef.current?.dispose();
 		reversedBufferRef.current?.dispose();
 		const loadedBuffer = new ToneAudioBuffer({
-			url: fileUrl,
+			url: bufferUrl,
 			onload: () => {
 				console.log("buffer is loaded", loadedBuffer);
 				bufferRef.current = loadedBuffer;
@@ -40,7 +41,7 @@ const Divisions: React.FC = () => {
 		});
 
 		const reversedBuffer = new ToneAudioBuffer({
-			url: fileUrl,
+			url: bufferUrl,
 			onload: () => {
 				console.log("buffer is loaded", reversedBuffer);
 				reversedBufferRef.current = reversedBuffer;
@@ -159,19 +160,11 @@ const Divisions: React.FC = () => {
 							}, 10000);
 						},
 					}).chain(reverb, delay, filter, panner, volume);
-					//}).chain(filter, panner, vibrolo, volume);
-					//}).chain(vibrolo, volume);
 
 					const duration = player.buffer.duration;
 					const pieces = duration / 34;
 
 					let startOffset = pieces * event.note;
-					/* console.log("Startoffset is: ", startOffset);
-					console.log("Duration is: ", duration);
-					console.log("Plater duration is: ", pieces / playbackRate); */
-					//player.fadeIn = 0.1;
-					//player.fadeOut = 0.1;
-					//player.start(now(), startOffset, 1.5);
 
 					console.log(startTime);
 					if (event.duration) {
@@ -180,7 +173,10 @@ const Divisions: React.FC = () => {
 						player.start(startTime, startOffset);
 						player.loop = true;
 						player.loopStart = startOffset;
-						player.loopEnd = startOffset + 1.5;
+						player.loopEnd =
+							startOffset + 1.3 > buffer.duration
+								? buffer.duration
+								: startOffset + 1.3;
 						await event.promise;
 						player.stop(now());
 					}
@@ -188,20 +184,16 @@ const Divisions: React.FC = () => {
 			}
 		});
 		const loadedSettings = generateSettings(50);
-		/* 		setupDelays();
-		 */ preloadAudio();
+		preloadAudio();
 		console.log(loadedSettings);
-		/* const vibrolo = new Vibrato(0.4, 0.75); */
 		const channel = new Channel({ volume: 0, channelCount: 2 });
 		channel.send("effectsRackIn");
 		const volume = new Volume(0).connect(channel);
-		/* const keys = new Keyboard((event) => {}, "all");
-		console.log("Number of notes: ", keys.numberOfNotes()); */
 	}, []);
 
 	return (
 		<div className="module-area-wrapper instrument">
-			<AudioVideoDropzone onFileDrop={handleFileDrop} />
+			<BufferSources bufferSourceUpdated={bufferSourceUpdated}></BufferSources>
 		</div>
 	);
 };

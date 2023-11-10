@@ -1,0 +1,20 @@
+import React, { useEffect } from "react";
+import { EffectProps } from "./BaseEffect";
+import { StereoWidener } from "tone";
+import { withBaseEffectInterface } from "./BaseEffectInterface";
+
+const StereoWidenerEffect: React.FC<EffectProps> = ({
+	effectInput,
+	effectOutput,
+	input,
+	output,
+}) => {
+	useEffect(() => {
+		const stereoWidth = new StereoWidener(1);
+		input?.chain(stereoWidth, output!);
+	}, [input, output]);
+
+	return <div>Stereo widener!{input?.name}</div>;
+};
+
+export default withBaseEffectInterface(StereoWidenerEffect);

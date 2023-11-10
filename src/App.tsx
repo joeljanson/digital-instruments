@@ -11,6 +11,7 @@ import DistortionEffect from "./Components/Audio-routing/Effect-components/Disto
 import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
 import StepSequencer from "./Components/Sequencers/StepSequencer";
 import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
+import StereoWidenerEffect from "./Components/Audio-routing/Effect-components/StereoWidenerEffect";
 
 export const globalEmitter = new Emitter();
 
