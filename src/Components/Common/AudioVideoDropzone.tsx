@@ -39,16 +39,29 @@ const AudioVideoDropzone: React.FC<AudioVideoDropzoneProps> = ({
 		e.preventDefault();
 		setHighlighted(false);
 
-		const file = e.dataTransfer?.files[0];
+		console.log("receives the data:", e);
 
-		if (file) {
-			// Create a URL for the dropped file
-			const fileUrl = URL.createObjectURL(file);
+		// First, check if there is any text/plain data (URL) being transferred
+		const textData = e.dataTransfer?.getData("text/plain");
+		if (textData) {
+			// This means an audio buffer URL has been dropped
+			// Call the callback function with this URL
+			onFileDrop(textData);
 
-			// Call the callback function passed as a prop
-			onFileDrop(fileUrl);
+			console.log("Audio Buffer URL:", textData);
+		} else {
+			// If no text/plain data, then check for a file
+			const file = e.dataTransfer?.files[0];
 
-			console.log("File URL:", fileUrl);
+			if (file) {
+				// Create a URL for the dropped file
+				const fileUrl = URL.createObjectURL(file);
+
+				// Call the callback function passed as a prop
+				onFileDrop(fileUrl);
+
+				console.log("File URL:", fileUrl);
+			}
 		}
 	};
 

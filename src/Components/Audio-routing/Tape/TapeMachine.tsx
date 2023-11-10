@@ -10,6 +10,7 @@ import {
 	Volume,
 } from "tone";
 import "./TapeMachine.scss";
+import TapeRecorder from "./TapeRecorder";
 
 const tapehiss = require("../../../audio/noise and ambience/tapehiss.mp3");
 
@@ -38,8 +39,15 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 			volume: 0,
 			channelCount: 2,
 		}).receive(receive);
+
+		const tapeMachineSend = new Channel({
+			volume: 0,
+			channelCount: 2,
+		});
+		tapeMachineSend.send(send);
 		const crossFade = new CrossFade().toDestination();
 		crossFadeRef.current = crossFade;
+		crossFade.connect(tapeMachineSend);
 
 		const bypassChannel = new Channel({ volume: 0, channelCount: 2 }).connect(
 			crossFade.a
@@ -191,6 +199,11 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 				older
 			</button>
 			{/* ... add more UI elements as needed ... */}
+			<TapeRecorder
+				bufferSourceUpdated={() => {
+					console.log("Buffer updated in the tape machine.");
+				}}
+			></TapeRecorder>
 		</div>
 	);
 };

@@ -19,6 +19,7 @@ import { globalEmitter } from "../../App";
 import Keyboard from "../Sequencers/Keyboard";
 import { TriggerEvent } from "../Sequencers/Events";
 import BufferSources from "../Common/BufferSources";
+import "./Instrument.scss";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -193,6 +194,9 @@ const Divisions: React.FC = () => {
 
 	return (
 		<div className="module-area-wrapper instrument">
+			<div className="submodule-area-wrapper instrument-main-area">
+				Main area
+			</div>
 			<BufferSources bufferSourceUpdated={bufferSourceUpdated}></BufferSources>
 		</div>
 	);

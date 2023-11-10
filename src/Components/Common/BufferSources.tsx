@@ -4,6 +4,7 @@ import AudioVideoDropzone from "./AudioVideoDropzone";
 import RadioRecorder from "./RadioRecorder";
 import { ToneAudioBuffer } from "tone";
 import InputRecorder from "./InputRecorder";
+import "./BufferSources.scss";
 
 // Define the props interface
 interface AudioVideoDropzoneProps {
@@ -14,7 +15,7 @@ const BufferSources: React.FC<AudioVideoDropzoneProps> = ({
 	bufferSourceUpdated,
 }) => {
 	return (
-		<div className={`buffer-sources`}>
+		<div className={`buffer-sources submodule-area-wrapper`}>
 			<AudioVideoDropzone onFileDrop={bufferSourceUpdated} />
 			<RadioRecorder bufferSourceUpdated={bufferSourceUpdated} />
 			<InputRecorder bufferSourceUpdated={bufferSourceUpdated} />

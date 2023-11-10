@@ -10,6 +10,7 @@ const InputRecorder: React.FC<InputRecorderProps> = ({
 }) => {
 	const [micAccessGranted, setMicAccessGranted] = useState(false);
 	const [isRecording, setIsRecording] = useState(false);
+	const isRecordingRef = useRef(false);
 	const micRef = useRef<Tone.UserMedia | null>(null);
 	const recorderRef = useRef<Tone.Recorder | null>(null);
 
@@ -18,8 +19,18 @@ const InputRecorder: React.FC<InputRecorderProps> = ({
 		recorderRef.current = new Tone.Recorder();
 		micRef.current = new Tone.UserMedia();
 
+		// Add a global mouseup listener
+		const handleGlobalMouseUp = () => {
+			if (isRecordingRef.current) {
+				stopRecording();
+			}
+		};
+
+		window.addEventListener("mouseup", handleGlobalMouseUp);
+
 		// Cleanup function to close the microphone when the component unmounts
 		return () => {
+			window.removeEventListener("mouseup", handleGlobalMouseUp);
 			if (micRef.current) {
 				micRef.current.close();
 			}
@@ -40,13 +51,15 @@ const InputRecorder: React.FC<InputRecorderProps> = ({
 	};
 
 	const startRecording = async () => {
+		isRecordingRef.current = true;
 		setIsRecording(true);
 		if (recorderRef.current) {
 			recorderRef.current.start();
 
 			// Stop recording after 10 seconds if the user hasn't released the button
 			setTimeout(() => {
-				if (isRecording) {
+				console.log("timeout is run");
+				if (isRecordingRef.current) {
 					stopRecording();
 				}
 			}, 10000);
@@ -54,10 +67,12 @@ const InputRecorder: React.FC<InputRecorderProps> = ({
 	};
 
 	const stopRecording = async () => {
-		if (!isRecording) {
+		if (!isRecordingRef.current) {
 			return;
 		}
+		isRecordingRef.current = false;
 		setIsRecording(false);
+
 		if (recorderRef.current) {
 			const recording = await recorderRef.current.stop();
 			const url = URL.createObjectURL(recording);
@@ -68,22 +83,16 @@ const InputRecorder: React.FC<InputRecorderProps> = ({
 	const handleMouseDown = () => {
 		if (!micAccessGranted) {
 			enableMic();
-		} else if (!isRecording) {
+		} else if (!isRecordingRef.current) {
 			startRecording();
-		}
-	};
-
-	const handleMouseUp = () => {
-		if (isRecording) {
-			stopRecording();
 		}
 	};
 
 	return (
 		<div>
-			<button onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
+			<button onMouseDown={handleMouseDown}>
 				{micAccessGranted
-					? isRecording
+					? isRecordingRef.current
 						? "Recording..."
 						: "Start and Hold to Record"
 					: "Enable Mic"}
