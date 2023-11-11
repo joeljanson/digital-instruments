@@ -103,9 +103,9 @@ const TapeRecorder: React.FC<ChannelRecorderProps> = ({
 						document.body.appendChild(link);
 						link.click();
 						document.body.removeChild(link);
-
 						// Cleanup the URL object
 						window.URL.revokeObjectURL(url);
+						loadedBuffer?.dispose();
 					}
 				},
 			});
