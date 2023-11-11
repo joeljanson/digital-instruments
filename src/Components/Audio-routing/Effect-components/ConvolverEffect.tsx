@@ -16,7 +16,7 @@ const ConvolverEffect: React.FC<EffectProps> = ({
 		input?.chain(convolver, output!);
 	}, [input, output]);
 
-	return <div>Convolver!{input?.name}</div>;
+	return <div>Convolver</div>;
 };
 
 export default withBaseEffectInterface(ConvolverEffect);

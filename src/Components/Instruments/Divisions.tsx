@@ -149,6 +149,7 @@ const Divisions: React.FC = () => {
 					const player = new Player({
 						url: buffer,
 						playbackRate: currentLoadedSettings.playbackRate,
+						//playbackRate: 1,
 						fadeIn: 0.01,
 						fadeOut: 0.01,
 						onstop: () => {

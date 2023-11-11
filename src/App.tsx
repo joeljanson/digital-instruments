@@ -48,7 +48,7 @@ function App() {
 				<Divisions></Divisions>
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-						{[<ConvolverEffect key="2" />]}
+						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
 					</EffectsRack>
 					<TapeMachine
 						receive="effectsRackOut"

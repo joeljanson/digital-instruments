@@ -11,10 +11,11 @@ const DelayEffect: React.FC<EffectProps> = ({
 }) => {
 	useEffect(() => {
 		const feedback = new FeedbackDelay(0.3, 0.6);
+		feedback.wet.value = 0.5;
 		input?.chain(feedback, output!);
 	}, [input, output]);
 
-	return <div>Delay!{input?.name}</div>;
+	return <div>Delay effect</div>;
 };
 
 export default withBaseEffectInterface(DelayEffect);

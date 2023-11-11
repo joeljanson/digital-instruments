@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as Tone from "tone";
 
+import bufferToWav from "audiobuffer-to-wav";
+
 interface ChannelRecorderProps {
 	bufferSourceUpdated: (buffer: string | Tone.ToneAudioBuffer) => void;
 }
@@ -83,11 +85,40 @@ const TapeRecorder: React.FC<ChannelRecorderProps> = ({
 		e.dataTransfer.setData("text/plain", recordedUrl.current);
 	};
 
+	const downloadRecording = () => {
+		if (recordedUrl.current) {
+			const buffer = new Tone.ToneAudioBuffer({
+				url: recordedUrl.current,
+				onload: (loadedBuffer) => {
+					console.log("Loaded for download!");
+					const audioBuffer = loadedBuffer!.get();
+					if (audioBuffer) {
+						const wavBuffer = bufferToWav(audioBuffer);
+						const blob = new Blob([wavBuffer], { type: "audio/wav" });
+						const url = window.URL.createObjectURL(blob);
+
+						const link = document.createElement("a");
+						link.href = url;
+						link.download = "recording.wav";
+						document.body.appendChild(link);
+						link.click();
+						document.body.removeChild(link);
+
+						// Cleanup the URL object
+						window.URL.revokeObjectURL(url);
+					}
+				},
+			});
+		}
+	};
+
 	return (
 		<div>
 			<button onClick={toggleRecording} draggable onDragStart={handleDragStart}>
 				{isRecording ? "Stop Recording" : "Start Recording"}
 			</button>
+
+			<button onClick={downloadRecording}>Download Recording</button>
 		</div>
 	);
 };

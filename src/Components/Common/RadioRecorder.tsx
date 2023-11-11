@@ -60,7 +60,7 @@ const RadioRecorder: React.FC<AudioVideoDropzoneProps> = ({
 	return (
 		<div className={`buffer-sources`}>
 			<button onClick={startRecording} disabled={isRecording}>
-				{isRecording ? "Recording..." : "Start Recording"}
+				{isRecording ? "Recording..." : "Record from Sveriges Radio P1"}
 			</button>
 			{/* Audio element is created dynamically */}
 		</div>
