@@ -30,7 +30,7 @@ const RadioRecorder: React.FC<AudioVideoDropzoneProps> = ({
 		audioRef.current = audio;
 
 		const channel = new Tone.Channel({
-			volume: 0,
+			volume: -20,
 			channelCount: 2,
 		}).toDestination();
 

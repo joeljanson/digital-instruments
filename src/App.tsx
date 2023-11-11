@@ -12,6 +12,7 @@ import ConvolverEffect from "./Components/Audio-routing/Effect-components/Convol
 import StepSequencer from "./Components/Sequencers/StepSequencer";
 import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
 import StereoWidenerEffect from "./Components/Audio-routing/Effect-components/StereoWidenerEffect";
+import GranDame from "./Components/Instruments/GranDame";
 
 export const globalEmitter = new Emitter();
 
@@ -45,7 +46,8 @@ function App() {
 				<SequencerArea></SequencerArea>
 				{/* <StepSequencer></StepSequencer> */}
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
-				<Divisions></Divisions>
+				{/* <Divisions></Divisions> */}
+				<GranDame></GranDame>
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
 						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
