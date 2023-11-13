@@ -5,6 +5,7 @@ import {
 	Time,
 	ToneAudioBuffer,
 	Volume,
+	now,
 } from "tone";
 import { globalEmitter } from "../../App";
 import { TriggerEvent } from "../Sequencers/Events";
@@ -13,7 +14,7 @@ import "./Instrument.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";
 
 const GranDame: React.FC = () => {
-	const [position, setPosition] = useState<number>(0);
+	const [position, setPosition] = useState<number>(0.3);
 	const positionRef = useRef(position);
 
 	const [detune, setDetune] = useState<number>(0);
@@ -38,7 +39,7 @@ const GranDame: React.FC = () => {
 	};
 
 	const preloadAudio = () => {
-		const fileUrl = process.env.PUBLIC_URL + "/audio/test-audio.mp3";
+		const fileUrl = process.env.PUBLIC_URL + "/audio/4.wav";
 		const loadedBuffer = new ToneAudioBuffer({
 			url: fileUrl,
 			onload: () => {
@@ -73,60 +74,69 @@ const GranDame: React.FC = () => {
 					//Frequency sets the frequency of the grains, that is, when it's 0.1 a .1ain will be played every 0.1 seconds.
 
 					const spread = 0.05;
+					const notes = event.notes ? event.notes : [event.note];
+					const startTimes = event.startTimes ? event.startTimes : [0];
 
-					const envelope = new AmplitudeEnvelope({
-						attack: 0.4,
-						decay: 0.2,
-						sustain: 1.0,
-						release: 4.0,
-						attackCurve: "linear",
-					}).connect(volume);
+					console.log("notes to play: ", notes);
+					notes.forEach(async (note: number, index) => {
+						console.log("note to play: ", note);
+						const startTime = now() + startTimes[index];
+						const envelope = new AmplitudeEnvelope({
+							attack: 0.4,
+							decay: 0.2,
+							sustain: 1.0,
+							release: 4.0,
+							attackCurve: "linear",
+						}).connect(volume);
 
-					const detuneCalculated =
-						(detunSemiRef.current + detunRef.current + event.note) * 100;
-					//Spread sets the length of the area which the grains will be picked from. 0.05 = from the position that the mouse pointer is at and 0.05 seconds ahead.
-					const player = new DroneGrainPlayer({
-						url: bufferRef.current,
-						frequency: frequency,
-						grainSize: grainSize,
-						overlap: 0.1,
-						loop: true,
-						detune: detuneCalculated,
+						const detuneCalculated =
+							(detunSemiRef.current + detunRef.current + note) * 100;
+						//Spread sets the length of the area which the grains will be picked from. 0.05 = from the position that the mouse pointer is at and 0.05 seconds ahead.
+						const player = new DroneGrainPlayer({
+							url: bufferRef.current,
+							frequency: frequency,
+							grainSize: grainSize,
+							overlap: 0.1,
+							loop: true,
+							detune: detuneCalculated,
+						});
+						player.connect(envelope);
+						const calculatedPosition =
+							positionRef.current * bufferRef.current!.duration - spread < 0
+								? 0
+								: positionRef.current * bufferRef.current!.duration - spread;
+						console.log("Calculated position:", calculatedPosition);
+						player.loopStart = calculatedPosition;
+						player.loopEnd = calculatedPosition + spread;
+						player.start(startTime);
+						envelope.triggerAttack();
+						players.current.push({ player: player, note: note });
+						await event.promise;
+						// Trigger the envelope release
+						envelope.triggerRelease();
+
+						// Schedule the stop and dispose after the release time
+						setTimeout(() => {
+							const playerIndex = players.current.findIndex(
+								(playerRef) => playerRef.player === player
+							);
+							if (playerIndex > -1) {
+								const internalPlayer = players.current[playerIndex].player;
+								internalPlayer.stop();
+								internalPlayer.dispose();
+								players.current.splice(playerIndex, 1);
+							} else {
+								console.error("Player not found");
+							}
+						}, Time(envelope.release).toMilliseconds()); // Convert seconds to milliseconds
 					});
-					player.connect(envelope);
-					const calculatedPosition =
-						positionRef.current * bufferRef.current.duration;
-					console.log("Calculated position:", calculatedPosition);
-					player.loopStart = calculatedPosition;
-					player.loopEnd = calculatedPosition + spread;
-					player.start();
-					envelope.triggerAttack();
-					players.current.push({ player: player, note: event.note });
-					await event.promise;
-					// Trigger the envelope release
-					envelope.triggerRelease();
-
-					// Schedule the stop and dispose after the release time
-					setTimeout(() => {
-						const playerIndex = players.current.findIndex(
-							(playerRef) => playerRef.player === player
-						);
-						if (playerIndex > -1) {
-							const internalPlayer = players.current[playerIndex].player;
-							internalPlayer.stop();
-							internalPlayer.dispose();
-							players.current.splice(playerIndex, 1);
-						} else {
-							console.error("Player not found");
-						}
-					}, Time(envelope.release).toMilliseconds()); // Convert seconds to milliseconds
 				}
 			}
 		});
 		preloadAudio();
 		const channel = new Channel({ volume: 0, channelCount: 2 });
 		channel.send("effectsRackIn");
-		const volume = new Volume(0).connect(channel);
+		const volume = new Volume(20).connect(channel);
 	}, []);
 
 	const handlPositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +144,12 @@ const GranDame: React.FC = () => {
 		setPosition(newPosition);
 		console.log(newPosition);
 		if (bufferRef.current) {
-			const calculatedPosition = newPosition * bufferRef.current.duration;
+			const calculatedPosition =
+				newPosition * bufferRef.current.duration - 0.05 < 0
+					? 0
+					: newPosition * bufferRef.current.duration - 0.05;
+			console.log("calculatedPosition: ", calculatedPosition);
+			console.log("bufferRef.current.duration: ", bufferRef.current.duration);
 			players.current.forEach((player) => {
 				player.player.loopStart = calculatedPosition;
 				player.player.loopEnd = calculatedPosition + 0.05;
@@ -198,7 +213,7 @@ const GranDame: React.FC = () => {
 					<input
 						type="range"
 						min="-12"
-						max="0"
+						max="24"
 						step="1"
 						value={detuneSemi}
 						onChange={handleDetuneSemiChange}

@@ -35,7 +35,7 @@ export class DroneGrainPlayer extends GrainPlayer {
 		let random = this._loopStart + Math.random() * (end - this._loopStart);
 		this.currTime = random;
 
-		source.start(time, random, undefined, 0.1);
+		source.start(time, random, undefined, 0.005);
 		source.stop(time + this._grainSize / this.playbackRate);
 
 		// add it to the active sources

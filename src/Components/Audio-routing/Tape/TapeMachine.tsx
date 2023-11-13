@@ -93,7 +93,7 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 			fadeOut: 0,
 			onload: () => {
 				console.log("Tape hiss loaded");
-				noisePlayer.volume.value = -25;
+				noisePlayer.volume.value = -35;
 				noisePlayer.loopEnd = 9.2;
 				noisePlayer.loopStart = 0.1;
 				noisePlayer.start();
@@ -167,7 +167,7 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 		distortionWetness: 0,
 	};
 	const oldSettings: EffectSettings = {
-		crossFade: 0.5,
+		crossFade: 1,
 		vibratoDepth: 0.1,
 		distortionWetness: 0,
 	};
