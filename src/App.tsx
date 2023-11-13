@@ -44,12 +44,12 @@ function App() {
 	return (
 		<div className="App" onClick={startTone}>
 			<header className="App-header">
-				<SequencerArea />
-				{/* <StepSequencer/> */}
+				{/* <SequencerArea /> */}
+				<StepSequencer />
 				{/* <ChordCreator /> */}
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
-				{/* <Divisions></Divisions> */}
-				<GranDame></GranDame>
+				<Divisions></Divisions>
+				{/* <GranDame></GranDame> */}
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
 						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}

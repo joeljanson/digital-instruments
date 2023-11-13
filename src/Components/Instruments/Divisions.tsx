@@ -20,10 +20,12 @@ import Keyboard from "../Sequencers/Keyboard";
 import { TriggerEvent } from "../Sequencers/Events";
 import BufferSources from "../Common/BufferSources";
 import "./Instrument.scss";
+import { EffectsPool } from "./InstrumentEffects/EffectsPool";
 
 const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const reversedBufferRef = useRef<ToneAudioBuffer | null>(null);
+	const effectsPool = useRef<EffectsPool>(new EffectsPool(16));
 
 	/* const availableDelays = useRef<Array<FeedbackDelay>>([]);
 	const unavailableDelays = useRef<Array<FeedbackDelay>>([]); */
@@ -128,18 +130,39 @@ const Divisions: React.FC = () => {
 				if (bufferRef.current) {
 					const currentLoadedSettings = loadedSettings[event.note];
 
-					const panner = new Panner(event.settings?.pan ?? 0);
+					//const panner = new Panner(event.settings?.pan ?? 0);
 
-					const delay = new FeedbackDelay(currentLoadedSettings.delay.time);
+					/* const delay = new FeedbackDelay(currentLoadedSettings.delay.time);
 					delay.wet.value = currentLoadedSettings.delay.mix;
-					delay.feedback.value = currentLoadedSettings.delay.feedback;
+					delay.feedback.value = currentLoadedSettings.delay.feedback; */
 
-					const reverb = new Reverb(currentLoadedSettings.reverb.size);
-					reverb.wet.value = currentLoadedSettings.reverb.mix;
+					/* const reverb = new Reverb(currentLoadedSettings.reverb.size);
+					reverb.wet.value = currentLoadedSettings.reverb.mix; */
 
-					const filter = new Filter(
+					/* const filter = new Filter(
 						currentLoadedSettings.filter.frequency,
 						"lowpass"
+					); */
+
+					const chain = effectsPool.current.getEffectChainForNote(event.note);
+
+					//Update the panning
+					chain.panner.pan.rampTo(event.settings?.pan ?? 0, 0);
+					//chain.panner.pan.rampTo(0, 0.3);
+
+					//Update the delay
+					chain.delay.delayTime.rampTo(currentLoadedSettings.delay.time, 0);
+					chain.delay.wet.rampTo(currentLoadedSettings.delay.mix, 0);
+					//chain.delay.wet.rampTo(0, 0.3);
+					chain.delay.feedback.rampTo(currentLoadedSettings.delay.feedback, 0);
+
+					//Update the reverb
+					chain.reverb.wet.rampTo(currentLoadedSettings.reverb.mix, 0);
+
+					//Update the filter
+					chain.filter.frequency.rampTo(
+						currentLoadedSettings.filter.frequency,
+						0
 					);
 
 					const buffer = currentLoadedSettings.reversed
@@ -150,18 +173,21 @@ const Divisions: React.FC = () => {
 						url: buffer,
 						playbackRate: currentLoadedSettings.playbackRate,
 						//playbackRate: 1,
-						fadeIn: 0.01,
-						fadeOut: 0.01,
+						fadeIn: 0,
+						fadeOut: 0,
 						onstop: () => {
 							setTimeout(() => {
 								player.dispose();
-								reverb.dispose();
-								filter.dispose();
-								panner.dispose();
 								console.log("Things disposed!");
-							}, 10000);
+							}, 1000);
 						},
-					}).chain(reverb, delay, filter, panner, volume);
+					}).chain(
+						chain.reverb,
+						chain.delay,
+						chain.filter,
+						chain.panner,
+						volume
+					);
 
 					const duration = player.buffer.duration;
 					const pieces = duration / 34;
@@ -171,6 +197,10 @@ const Divisions: React.FC = () => {
 					console.log(startTime);
 					if (event.duration) {
 						player.start(startTime, startOffset, event.duration);
+						await event.promise;
+						console.log("shoud release effect chain");
+						effectsPool.current.releaseEffectChain(event.note);
+						player.stop(now());
 					} else {
 						player.start(startTime, startOffset);
 						player.loop = true;
@@ -180,6 +210,8 @@ const Divisions: React.FC = () => {
 								? buffer.duration
 								: startOffset + 1.3;
 						await event.promise;
+						console.log("shoud release effect chain");
+						effectsPool.current.releaseEffectChain(event.note);
 						player.stop(now());
 					}
 				}

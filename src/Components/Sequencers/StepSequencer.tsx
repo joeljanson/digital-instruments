@@ -17,12 +17,12 @@ function StepSequencer() {
 			const loop = new Loop((time) => {
 				const eventWithDuration = {
 					...event,
-					duration: "2n",
+					duration: "16n",
 					startTime: time,
 					//settings: { pan: -1 + Math.random() * 2 },
 				};
 				globalEmitter.emit("SEQUENCER_EVENT", eventWithDuration);
-			}, "2n").start();
+			}, "16n").start();
 			Transport.start();
 			await event.promise;
 			loop.stop();
