@@ -1,28 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import AudioVideoDropzone from "../Common/AudioVideoDropzone";
-import {
-	Channel,
-	FeedbackDelay,
-	Filter,
-	PanVol,
-	Panner,
-	Player,
-	Reverb,
-	Time,
-	ToneAudioBuffer,
-	Vibrato,
-	Volume,
-	gainToDb,
-	now,
-} from "tone";
+import { Channel, Player, ToneAudioBuffer, Volume, now } from "tone";
 import { globalEmitter } from "../../App";
-import Keyboard from "../Sequencers/Keyboard";
 import { TriggerEvent } from "../Sequencers/Events";
 import BufferSources from "../Common/BufferSources";
 import "./Instrument.scss";
 import { EffectsPool } from "./InstrumentEffects/EffectsPool";
 
-const Divisions: React.FC = () => {
+interface InstrumentProps {
+	triggerEventName: string;
+}
+
+const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const reversedBufferRef = useRef<ToneAudioBuffer | null>(null);
 	const effectsPool = useRef<EffectsPool>(new EffectsPool(16));
@@ -123,7 +111,8 @@ const Divisions: React.FC = () => {
 
 	useEffect(() => {
 		console.log("Use effect is run in division");
-		globalEmitter.on("SEQUENCER_EVENT", async (event: TriggerEvent) => {
+		const triggerEventHandler = async (event: TriggerEvent) => {
+			// Your event handling logic here
 			if (event.eventType === "noteOn") {
 				const startTime = event.startTime ?? now();
 
@@ -147,7 +136,7 @@ const Divisions: React.FC = () => {
 					const chain = effectsPool.current.getEffectChainForNote(event.note);
 
 					//Update the panning
-					chain.panner.pan.rampTo(event.settings?.pan ?? 0, 0);
+					chain.panner.pan.rampTo(event.settings?.pan ?? 0, 0.3);
 					//chain.panner.pan.rampTo(0, 0.3);
 
 					//Update the delay
@@ -216,14 +205,21 @@ const Divisions: React.FC = () => {
 					}
 				}
 			}
-		});
+		};
+
+		globalEmitter.on(triggerEventName, triggerEventHandler);
+
 		const loadedSettings = generateSettings(50);
 		preloadAudio();
 		console.log(loadedSettings);
 		const channel = new Channel({ volume: 0, channelCount: 2 });
 		channel.send("effectsRackIn");
 		const volume = new Volume(0).connect(channel);
-	}, []);
+		// Don't forget to clean up the event listener
+		return () => {
+			globalEmitter.off(triggerEventName, triggerEventHandler);
+		};
+	}, [triggerEventName]);
 
 	return (
 		<div className="module-area-wrapper instrument">

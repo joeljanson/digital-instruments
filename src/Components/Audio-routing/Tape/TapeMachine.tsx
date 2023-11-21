@@ -19,6 +19,7 @@ type EffectSettings = {
 	crossFade: number;
 	vibratoDepth: number;
 	distortionWetness: number;
+	noiseVolume: number; // Added noiseVolume
 };
 
 const TapeMachine: React.FC<{ receive: string; send: string }> = ({
@@ -28,10 +29,12 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 	const crossFadeRef = useRef<CrossFade | null>(null);
 	const vibratoRef = useRef<Vibrato[]>([]);
 	const distortionRef = useRef<Distortion[]>([]);
+	const noisePlayerRef = useRef<Player | null>(null);
 	const [effectSettings, setEffectSettings] = useState<EffectSettings>({
 		crossFade: 0,
 		vibratoDepth: 0,
 		distortionWetness: 0,
+		noiseVolume: 0,
 	});
 
 	useEffect(() => {
@@ -99,6 +102,7 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 				noisePlayer.start();
 			},
 		}).connect(crossFade.b);
+		noisePlayerRef.current = noisePlayer;
 
 		tapeMachineReceive.chain(
 			distortionLowPass,
@@ -123,6 +127,7 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 		// Cleanup function to dispose of audio nodes when the component unmounts
 		return () => {
 			tapeMachineReceive.dispose();
+			noisePlayerRef.current?.dispose();
 			crossFade.dispose();
 			bypassChannel.dispose();
 			currentVibratoNodes.forEach((vibrato) => vibrato.dispose());
@@ -148,6 +153,7 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 		distortionRef.current.forEach((distortion) => {
 			distortion.wet.rampTo(settings.distortionWetness, 0.3);
 		});
+		noisePlayerRef.current?.volume.linearRampTo(settings.noiseVolume, 1.0);
 	};
 
 	const handleButtonClick = (settings: EffectSettings) => {
@@ -165,16 +171,19 @@ const TapeMachine: React.FC<{ receive: string; send: string }> = ({
 		crossFade: 0,
 		vibratoDepth: 0,
 		distortionWetness: 0,
+		noiseVolume: -Infinity,
 	};
 	const oldSettings: EffectSettings = {
 		crossFade: 1,
 		vibratoDepth: 0.1,
 		distortionWetness: 0,
+		noiseVolume: -45,
 	};
 	const olderSettings: EffectSettings = {
 		crossFade: 1,
 		vibratoDepth: 0.2,
 		distortionWetness: 0.005,
+		noiseVolume: -25,
 	};
 
 	return (

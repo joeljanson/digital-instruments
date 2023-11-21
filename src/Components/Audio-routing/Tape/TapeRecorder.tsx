@@ -117,8 +117,9 @@ const TapeRecorder: React.FC<ChannelRecorderProps> = ({
 			<button onClick={toggleRecording} draggable onDragStart={handleDragStart}>
 				{isRecording ? "Stop Recording" : "Start Recording"}
 			</button>
-
-			<button onClick={downloadRecording}>Download Recording</button>
+			<button onClick={downloadRecording} className="download-button">
+				Download Recording
+			</button>
 		</div>
 	);
 };

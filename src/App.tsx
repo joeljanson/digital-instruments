@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
 import "./App.scss";
 import Divisions from "./Components/Instruments/Divisions";
-import { Emitter, context, start } from "tone";
+import { Emitter, ToneAudioBuffer, context, start } from "tone";
 import SequencerArea from "./Components/Sequencers/SequenceArea";
 import EffectsRack from "./Components/Audio-routing/Effect-components/EffectsRack";
 import DelayEffect from "./Components/Audio-routing/Effect-components/DelayEffect";
-import ReverbEffect from "./Components/Audio-routing/Effect-components/ReverbEffect";
-import ChorusEffect from "./Components/Audio-routing/Effect-components/ChorusEffect";
-import DistortionEffect from "./Components/Audio-routing/Effect-components/DistortionEffect";
 import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
-import StepSequencer from "./Components/Sequencers/StepSequencer";
 import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
-import StereoWidenerEffect from "./Components/Audio-routing/Effect-components/StereoWidenerEffect";
 import GranDame from "./Components/Instruments/GranDame";
-import ChordCreator from "./Components/Sequencers/ChordCreator";
-
+import { Chains } from "./Components/Sequencers/SequencerComponentInterfaces";
 export const globalEmitter = new Emitter();
+
+/* TEST CHAIN */
+const chainsData: Chains = [
+	[
+		{ name: "input", type: "all" }, // This matches InputComponentDef
+		{
+			name: "chordcreator",
+			chords: [
+				{ note: 0, voicing: [0, 4, 7] },
+				{ note: 4, voicing: [0, 5, 12] },
+			],
+		}, // This matches ChordCreatorDef
+	],
+	// ...additional chains
+];
 
 function App() {
 	const [toneStarted, setToneStarted] = useState(false);
@@ -39,17 +48,34 @@ function App() {
 			// Context has been closed
 			setToneStarted(false);
 		}
+
+		/* async function processDrumSamples(url: string) {
+			try {
+				const buffer = await ToneAudioBuffer.load(url);
+				const audioBuffer = new ToneAudioBuffer(buffer);
+
+				const detector = new StripSilence(0.9, 0.05); // Threshold set to 0.1
+				const onsets = await detector.findSampleOnsets(audioBuffer);
+				console.log("Onsets:", onsets);
+			} catch (error) {
+				console.error("Error processing drum samples:", error);
+			}
+		}
+
+		// Example usage
+		processDrumSamples(beat1); */
 	}, []);
 
 	return (
 		<div className="App" onClick={startTone}>
 			<header className="App-header">
-				{/* <SequencerArea /> */}
-				<StepSequencer />
+				<SequencerArea chains={chainsData} />
+				{/* <StepSequencer /> */}
 				{/* <ChordCreator /> */}
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
-				<Divisions></Divisions>
+				{/* <Divisions triggerEventName="SEQUENCER_EVENT" /> */}
 				{/* <GranDame></GranDame> */}
+				<GranDame></GranDame>
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
 						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
