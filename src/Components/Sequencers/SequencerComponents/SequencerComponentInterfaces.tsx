@@ -1,5 +1,6 @@
-import ChordCreatorComponent from "./ChordCreatorComponent";
-import InputComponent from "./InputComponent";
+import ChordCreatorComponent from "./Components/ChordCreatorComponent";
+import InputComponent from "./Components/InputComponent";
+import StepSequencerComponent from "./Components/StepSequencerComponent";
 
 interface BaseComponentDef {
 	name: string;
@@ -17,8 +18,15 @@ export interface ChordCreatorDef extends BaseComponentDef {
 	chords: { note: number; voicing: number[] }[];
 	// Other chord-creator-specific properties
 }
+export interface StepSequencerDef extends BaseComponentDef {
+	steps: number;
+	// Other chord-creator-specific properties
+}
 
-export type ComponentDef = InputComponentDef | ChordCreatorDef;
+export type ComponentDef =
+	| InputComponentDef
+	| ChordCreatorDef
+	| StepSequencerDef;
 
 /* Component mappings */
 type ComponentMap = {
@@ -28,6 +36,7 @@ type ComponentMap = {
 export const componentMap: ComponentMap = {
 	input: InputComponent,
 	chordcreator: ChordCreatorComponent,
+	stepsequencer: StepSequencerComponent,
 	// other component mappings
 };
 

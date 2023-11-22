@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Channel, Player, ToneAudioBuffer, Volume, now } from "tone";
 import { globalEmitter } from "../../App";
-import { TriggerEvent } from "../Sequencers/Events";
+import { TriggerEvent } from "../Sequencers/Helpers/Events";
 import BufferSources from "../Common/BufferSources";
 import "./Instrument.scss";
 import { EffectsPool } from "./InstrumentEffects/EffectsPool";
@@ -113,25 +113,23 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 		console.log("Use effect is run in division");
 		const triggerEventHandler = async (event: TriggerEvent) => {
 			// Your event handling logic here
+
+			const player = new Player({
+				fadeIn: 0,
+				fadeOut: 0,
+				onstop: () => {
+					setTimeout(() => {
+						player.dispose();
+						//console.log("Things disposed!");
+					}, 1000);
+				},
+			});
 			if (event.eventType === "noteOn") {
+				//console.log("Division receives note on");
 				const startTime = event.startTime ?? now();
 
-				if (bufferRef.current) {
+				if (bufferRef.current && reversedBufferRef.current) {
 					const currentLoadedSettings = loadedSettings[event.note];
-
-					//const panner = new Panner(event.settings?.pan ?? 0);
-
-					/* const delay = new FeedbackDelay(currentLoadedSettings.delay.time);
-					delay.wet.value = currentLoadedSettings.delay.mix;
-					delay.feedback.value = currentLoadedSettings.delay.feedback; */
-
-					/* const reverb = new Reverb(currentLoadedSettings.reverb.size);
-					reverb.wet.value = currentLoadedSettings.reverb.mix; */
-
-					/* const filter = new Filter(
-						currentLoadedSettings.filter.frequency,
-						"lowpass"
-					); */
 
 					const chain = effectsPool.current.getEffectChainForNote(event.note);
 
@@ -158,21 +156,11 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 						? bufferRef.current!
 						: reversedBufferRef.current!;
 
-					const player = new Player({
-						url: buffer,
-						playbackRate: currentLoadedSettings.playbackRate,
-						//playbackRate: 1,
-						fadeIn: 0,
-						fadeOut: 0,
-						onstop: () => {
-							setTimeout(() => {
-								player.dispose();
-								console.log("Things disposed!");
-							}, 1000);
-						},
-					}).chain(
+					player.buffer = buffer;
+					player.playbackRate = currentLoadedSettings.playbackRate;
+					player.chain(
 						chain.reverb,
-						chain.delay,
+						//chain.delay,
 						chain.filter,
 						chain.panner,
 						volume
@@ -183,13 +171,9 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 
 					let startOffset = pieces * event.note;
 
-					console.log(startTime);
+					//console.log(startTime);
 					if (event.duration) {
 						player.start(startTime, startOffset, event.duration);
-						await event.promise;
-						console.log("shoud release effect chain");
-						effectsPool.current.releaseEffectChain(event.note);
-						player.stop(now());
 					} else {
 						player.start(startTime, startOffset);
 						player.loop = true;
@@ -198,12 +182,13 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 							startOffset + 1.3 > buffer.duration
 								? buffer.duration
 								: startOffset + 1.3;
-						await event.promise;
-						console.log("shoud release effect chain");
-						effectsPool.current.releaseEffectChain(event.note);
-						player.stop(now());
 					}
 				}
+			} else if (event.eventType === "noteOff") {
+				console.log("shoud release effect chain");
+				effectsPool.current.releaseEffectChain(event.note);
+				player.stop(now());
+				player.dispose();
 			}
 		};
 

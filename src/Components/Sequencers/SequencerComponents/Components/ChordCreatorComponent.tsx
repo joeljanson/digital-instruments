@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { globalEmitter } from "../../App";
-import { TriggerEvent } from "./Events";
-import { ChordCreatorDef } from "./SequencerComponentInterfaces";
+import { globalEmitter } from "../../../../App";
+import { TriggerEvent } from "../../Helpers/Events";
+import { ChordCreatorDef } from "../SequencerComponentInterfaces";
 
 const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 	chords,

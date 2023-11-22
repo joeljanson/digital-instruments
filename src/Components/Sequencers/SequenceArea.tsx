@@ -6,7 +6,7 @@ import {
 	Chains,
 	ComponentDef,
 	componentMap,
-} from "./SequencerComponentInterfaces";
+} from "./SequencerComponents/SequencerComponentInterfaces";
 
 // Assuming you're passing this as a prop to your component
 interface SequencerModuleProps {

@@ -8,7 +8,7 @@ import DelayEffect from "./Components/Audio-routing/Effect-components/DelayEffec
 import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
 import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
 import GranDame from "./Components/Instruments/GranDame";
-import { Chains } from "./Components/Sequencers/SequencerComponentInterfaces";
+import { Chains } from "./Components/Sequencers/SequencerComponents/SequencerComponentInterfaces";
 export const globalEmitter = new Emitter();
 
 /* TEST CHAIN */
@@ -22,6 +22,7 @@ const chainsData: Chains = [
 				{ note: 4, voicing: [0, 5, 12] },
 			],
 		}, // This matches ChordCreatorDef
+		{ name: "stepsequencer", steps: 8 }, // This matches InputComponentDef
 	],
 	// ...additional chains
 ];
@@ -73,12 +74,12 @@ function App() {
 				{/* <StepSequencer /> */}
 				{/* <ChordCreator /> */}
 				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
-				{/* <Divisions triggerEventName="SEQUENCER_EVENT" /> */}
+				<Divisions triggerEventName="SEQUENCER_EVENT" />
 				{/* <GranDame></GranDame> */}
-				<GranDame></GranDame>
+				{/* <GranDame></GranDame> */}
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
+						{[<ConvolverEffect key="2" />]}
 					</EffectsRack>
 					<TapeMachine
 						receive="effectsRackOut"

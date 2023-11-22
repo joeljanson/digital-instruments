@@ -8,7 +8,7 @@ import {
 	now,
 } from "tone";
 import { globalEmitter } from "../../App";
-import { TriggerEvent } from "../Sequencers/Events";
+import { TriggerEvent } from "../Sequencers/Helpers/Events";
 import BufferSources from "../Common/BufferSources";
 import "./Instrument.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";

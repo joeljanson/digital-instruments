@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import Keyboard from "./Keyboard";
-import { globalEmitter } from "../../App";
-import { TriggerEvent } from "./Events";
-import { InputComponentDef } from "./SequencerComponentInterfaces";
+import Keyboard from "../../Helpers/Keyboard";
+import { globalEmitter } from "../../../../App";
+import { TriggerEvent } from "../../Helpers/Events";
+import { InputComponentDef } from "../SequencerComponentInterfaces";
 
 const InputComponent: React.FC<InputComponentDef> = ({
 	type,
