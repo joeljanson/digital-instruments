@@ -10,7 +10,7 @@ import {
 import { globalEmitter } from "../../App";
 import { TriggerEvent } from "../Sequencers/Helpers/Events";
 import BufferSources from "../Common/BufferSources";
-import "./Instrument.scss";
+import "./InstrumentArea.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";
 
 const GranDame: React.FC = () => {
@@ -111,6 +111,7 @@ const GranDame: React.FC = () => {
 						player.start(startTime);
 						envelope.triggerAttack();
 						players.current.push({ player: player, note: note });
+
 						await event.promise;
 						// Trigger the envelope release
 						envelope.triggerRelease();

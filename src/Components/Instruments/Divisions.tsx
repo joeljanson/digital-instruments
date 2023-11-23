@@ -3,7 +3,7 @@ import { Channel, Player, ToneAudioBuffer, Volume, now } from "tone";
 import { globalEmitter } from "../../App";
 import { TriggerEvent } from "../Sequencers/Helpers/Events";
 import BufferSources from "../Common/BufferSources";
-import "./Instrument.scss";
+import "./InstrumentArea.scss";
 import { EffectsPool } from "./InstrumentEffects/EffectsPool";
 
 interface InstrumentProps {
@@ -134,7 +134,7 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 					const chain = effectsPool.current.getEffectChainForNote(event.note);
 
 					//Update the panning
-					chain.panner.pan.rampTo(event.settings?.pan ?? 0, 0.3);
+					chain.panner.pan.value = event.settings?.pan ?? 0;
 					//chain.panner.pan.rampTo(0, 0.3);
 
 					//Update the delay
@@ -208,8 +208,14 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 
 	return (
 		<div className="module-area-wrapper instrument">
-			<div className="submodule-area-wrapper instrument-main-area">
-				Main area
+			<div className="submodule-area-wrapper">
+				<div className="instrument-main-area">
+					<h1>Main area</h1>
+					<img
+						src="https://i.pinimg.com/474x/9b/4b/e6/9b4be63c10733f63a23b78f732906bd5.jpg"
+						alt="inspiration"
+					/>
+				</div>
 			</div>
 			<BufferSources bufferSourceUpdated={bufferSourceUpdated}></BufferSources>
 		</div>

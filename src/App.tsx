@@ -69,17 +69,24 @@ function App() {
 
 	return (
 		<div className="App" onClick={startTone}>
+			<div className="top-bar-area">
+				Top bar area{" "}
+				{!!!toneStarted ? (
+					<h1>Click anywhere to unmute sound.</h1>
+				) : (
+					"Tone started!"
+				)}
+			</div>
 			<header className="App-header">
 				<SequencerArea chains={chainsData} />
 				{/* <StepSequencer /> */}
 				{/* <ChordCreator /> */}
-				{!!!toneStarted ? <h1>Click anywhere to unmute sound.</h1> : ""}
 				<Divisions triggerEventName="SEQUENCER_EVENT" />
 				{/* <GranDame></GranDame> */}
 				{/* <GranDame></GranDame> */}
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-						{[<ConvolverEffect key="2" />]}
+						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
 					</EffectsRack>
 					<TapeMachine
 						receive="effectsRackOut"

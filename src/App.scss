@@ -9,6 +9,7 @@
 $padding: 10px;
 $margin: $padding / 2; // Here, the margin is half the padding value
 $borderRadius: 20px;
+$topBarHeight: 60px;
 
 body,
 html {
@@ -24,17 +25,22 @@ h1 {
 
 .App {
 	text-align: center;
-}
-
-.App-logo {
-	height: 40vmin;
-	pointer-events: none;
+	height: 100vh; /* Defined height for the parent */
+	min-height: 100vh; /* Keeps the minimum height */
+	display: flex;
+	flex-direction: column;
+	.top-bar-area {
+		height: $topBarHeight;
+		background-color: #262626;
+		color: white;
+	}
 }
 
 .App-header {
 	background-color: #262626;
-	height: 100vh; /* Defined height for the parent */
-	min-height: 100vh; /* Keeps the minimum height */
+	height: calc(100% - #{$topBarHeight}); /* Defined height for the parent */
+	min-height: calc(100% - #{$topBarHeight}); /* Keeps the minimum height */
+	flex: 1 1;
 	display: flex;
 	flex-direction: row;
 	align-items: center;

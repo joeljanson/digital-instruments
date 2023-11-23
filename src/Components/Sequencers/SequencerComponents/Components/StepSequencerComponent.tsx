@@ -19,7 +19,10 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 			output = "SEQUENCER_EVENT";
 		}
 
-		const currentlyPressedNotes = new Set<number>();
+		const currentlyPressedNotes = new Map<
+			number,
+			{ id: number; notes?: number[] }
+		>();
 		let loopStarted = false;
 
 		let loop: Loop;
@@ -28,14 +31,23 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 		const triggerEventHandler = async (event: TriggerEvent) => {
 			console.log("Triggers event in step sequencer!");
 			if (event.eventType === "noteOn") {
-				currentlyPressedNotes.add(event.note); // Use a Set for unique values
-				console.log("currentlyPressedNotes", currentlyPressedNotes);
+				currentlyPressedNotes.set(event.note, {
+					id: event.note,
+					notes: event.notes ? event.notes : [event.note],
+				});
+				console.log(
+					"currentlyPressedNotes",
+					Array.from(currentlyPressedNotes.values())
+				);
+
 				if (!loopStarted) {
 					loop = new Loop((time) => {
-						if (currentlyPressedNotes.size > 0) {
-							const notesArray = Array.from(currentlyPressedNotes);
-							const note = notesArray[loopIndex % notesArray.length];
-							console.log("note", note);
+						const allNotesFlattened = Array.from(currentlyPressedNotes.values())
+							.map((obj) => obj.notes)
+							.flat();
+						if (allNotesFlattened.length > 0) {
+							const note =
+								allNotesFlattened[loopIndex % allNotesFlattened.length];
 							const eventWithDuration = {
 								...event,
 								note: note,
@@ -47,7 +59,7 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 
 							globalEmitter.emit(output, eventWithDuration);
 						}
-					}, "8n");
+					}, "16n");
 
 					loop.start();
 					Transport.start();
@@ -75,7 +87,11 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 		};
 	}, [steps, otherProps]);
 
-	return <div className="module-area-wrapper">Step sequencer</div>;
+	return (
+		<div className="module-area-wrapper">
+			Step sequencer<div>Set step duration</div>
+		</div>
+	);
 };
 
 export default StepSequencerComponent;

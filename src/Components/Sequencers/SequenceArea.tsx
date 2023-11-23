@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-/* import Keyboard from "./Keyboard";
-import { globalEmitter } from "../../App";
-import { TriggerEvent } from "./Events"; */
+import "./SequencerArea.scss";
 import {
 	Chains,
 	ComponentDef,
@@ -34,6 +32,7 @@ function SequencerArea({ chains }: SequencerModuleProps) {
 					{...componentDef}
 					index={index}
 					isLastInChain={isLastInChain}
+					key={index}
 				/>
 			);
 		}
@@ -44,17 +43,19 @@ function SequencerArea({ chains }: SequencerModuleProps) {
 	return (
 		<div className="module-area-wrapper">
 			Sequencer area
-			{chains.map((chain, chainIndex) => (
-				<div key={chainIndex}>
-					{chain.map((componentDef, componentIndex) =>
-						renderComponent(
-							componentDef,
-							componentIndex,
-							componentIndex === chain.length - 1
-						)
-					)}
-				</div>
-			))}
+			<div className="sequencer-area">
+				{chains.map((chain, chainIndex) => (
+					<div key={chainIndex}>
+						{chain.map((componentDef, componentIndex) =>
+							renderComponent(
+								componentDef,
+								componentIndex,
+								componentIndex === chain.length - 1
+							)
+						)}
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }
