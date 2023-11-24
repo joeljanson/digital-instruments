@@ -162,7 +162,7 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 						chain.reverb,
 						//chain.delay,
 						chain.filter,
-						chain.panner,
+						//chain.panner,
 						volume
 					);
 

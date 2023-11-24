@@ -6,10 +6,10 @@
 }
 
 // Define your variables
-$padding: 10px;
+$padding: 5px;
 $margin: $padding / 2; // Here, the margin is half the padding value
 $borderRadius: 20px;
-$topBarHeight: 60px;
+$topBarHeight: 40px;
 
 body,
 html {
@@ -18,66 +18,67 @@ html {
 	height: 100%;
 	margin: 0;
 }
+* {
+	box-sizing: border-box;
+}
 
 h1 {
 	font-size: 18px;
 }
 
 .App {
+	display: flex;
+	background-color: #262626;
 	text-align: center;
 	height: 100vh; /* Defined height for the parent */
-	min-height: 100vh; /* Keeps the minimum height */
-	display: flex;
+	max-width: 100vw;
+	max-height: 100vh; /* Keeps the minimum height */
+	align-items: stretch;
 	flex-direction: column;
 	.top-bar-area {
+		display: flex;
 		height: $topBarHeight;
 		background-color: #262626;
 		color: white;
 	}
 }
 
-.App-header {
-	background-color: #262626;
-	height: calc(100% - #{$topBarHeight}); /* Defined height for the parent */
-	min-height: calc(100% - #{$topBarHeight}); /* Keeps the minimum height */
-	flex: 1 1;
+.main-area {
 	display: flex;
+	min-height: 0;
+	flex: 1;
 	flex-direction: row;
-	align-items: center;
+	align-items: stretch;
 	justify-content: center;
-	font-size: calc(10px + 2vmin);
 	color: white;
+	margin: 10px 10px;
 }
 
 .module-area-wrapper {
-	height: calc(100% - #{$padding * 4});
 	display: flex;
+	min-height: 0;
+	box-sizing: border-box;
 	flex: 1;
+	flex-grow: 1;
+	//height: 100%;
 	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	justify-content: start;
+	align-items: stretch;
 	padding: $padding;
-	margin: $margin;
+	margin: 0px $margin;
 	border: 1px solid white;
 	border-radius: $borderRadius;
 	&.instrument {
-		flex: 3;
+		flex-grow: 3;
 	}
 	.submodule-area-wrapper {
+		min-height: 0;
+		display: flex;
 		flex: 1;
-		width: calc(100% - #{$padding * 2});
-		padding: $padding;
-		//margin: 10px;
+		/* height: 100%; */
+		padding: $padding * 2;
 		border: 1px solid white;
 		border-radius: $borderRadius;
 		/* Apply margin to all elements except the first one */
-		&:not(:first-child) {
-			margin-top: $padding;
-		}
-
-		/* Style for the first child */
-		&:first-child {
-			margin-top: 0px;
-		}
 	}
 }

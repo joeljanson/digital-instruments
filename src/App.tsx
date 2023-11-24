@@ -12,6 +12,7 @@ import { Chains } from "./Components/Sequencers/SequencerComponents/SequencerCom
 export const globalEmitter = new Emitter();
 
 /* TEST CHAIN */
+
 const chainsData: Chains = [
 	[
 		{ name: "input", type: "all" }, // This matches InputComponentDef
@@ -23,6 +24,7 @@ const chainsData: Chains = [
 			],
 		}, // This matches ChordCreatorDef
 		{ name: "stepsequencer", steps: 8 }, // This matches InputComponentDef
+		{ name: "output", output: "SEQUENCER_EVENT" }, // This matches InputComponentDef
 	],
 	// ...additional chains
 ];
@@ -77,7 +79,7 @@ function App() {
 					"Tone started!"
 				)}
 			</div>
-			<header className="App-header">
+			<header className="main-area">
 				<SequencerArea chains={chainsData} />
 				{/* <StepSequencer /> */}
 				{/* <ChordCreator /> */}

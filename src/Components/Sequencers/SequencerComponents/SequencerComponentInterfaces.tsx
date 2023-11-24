@@ -1,16 +1,21 @@
 import ChordCreatorComponent from "./Components/ChordCreatorComponent";
 import InputComponent from "./Components/InputComponent";
+import OutputComponent from "./Components/OutputComponent";
 import StepSequencerComponent from "./Components/StepSequencerComponent";
 
 interface BaseComponentDef {
 	name: string;
 	index?: number;
-	isLastInChain?: boolean;
 	// ... common properties
 }
 
 export interface InputComponentDef extends BaseComponentDef {
 	type: "all" | "qwerty";
+	// Other input-specific properties
+}
+
+export interface OutputComponentDef extends BaseComponentDef {
+	output: string;
 	// Other input-specific properties
 }
 
@@ -26,7 +31,10 @@ export interface StepSequencerDef extends BaseComponentDef {
 export type ComponentDef =
 	| InputComponentDef
 	| ChordCreatorDef
-	| StepSequencerDef;
+	| StepSequencerDef
+	| OutputComponentDef;
+
+type MiddleComponentDef = ChordCreatorDef | StepSequencerDef; // Add other component types as needed
 
 /* Component mappings */
 type ComponentMap = {
@@ -37,9 +45,10 @@ export const componentMap: ComponentMap = {
 	input: InputComponent,
 	chordcreator: ChordCreatorComponent,
 	stepsequencer: StepSequencerComponent,
+	output: OutputComponent,
 	// other component mappings
 };
 
 /* Chains */
-type Chain = ComponentDef[];
+type Chain = [InputComponentDef, ...MiddleComponentDef[], OutputComponentDef];
 export type Chains = Chain[];

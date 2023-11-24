@@ -7,7 +7,6 @@ import { note } from "tonal";
 
 const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 	steps,
-	isLastInChain,
 	...otherProps
 }) => {
 	useEffect(() => {
@@ -15,9 +14,6 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 
 		const input = `INPUT_${otherProps.index ? otherProps.index - 1 : 0}`;
 		let output = `INPUT_${otherProps.index ? otherProps.index : 0}`;
-		if (isLastInChain) {
-			output = "SEQUENCER_EVENT";
-		}
 
 		const currentlyPressedNotes = new Map<
 			number,

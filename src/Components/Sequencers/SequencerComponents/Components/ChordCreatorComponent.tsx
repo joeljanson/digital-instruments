@@ -5,7 +5,6 @@ import { ChordCreatorDef } from "../SequencerComponentInterfaces";
 
 const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 	chords,
-	isLastInChain,
 	...otherProps
 }) => {
 	useEffect(() => {
@@ -13,9 +12,6 @@ const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 
 		const input = `INPUT_${otherProps.index ? otherProps.index - 1 : 0}`;
 		let output = `INPUT_${otherProps.index ? otherProps.index : 0}`;
-		if (isLastInChain) {
-			output = "SEQUENCER_EVENT";
-		}
 
 		const triggerEventHandler = async (event: TriggerEvent) => {
 			console.log("Triggers event!");

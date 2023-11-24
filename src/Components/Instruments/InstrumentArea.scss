@@ -1,8 +1,12 @@
 .instrument-main-area {
-	flex: 1 !important;
-	overflow: hidden;
+	min-height: 0;
+	display: flex;
+	flex: 1;
+	padding: 20px;
 	img {
+		display: flex;
+		flex: 1;
 		width: 50%;
-		height: 50%;
+		object-fit: contain;
 	}
 }
