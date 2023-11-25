@@ -50,5 +50,9 @@ export const componentMap: ComponentMap = {
 };
 
 /* Chains */
-type Chain = [InputComponentDef, ...MiddleComponentDef[], OutputComponentDef];
-export type Chains = Chain[];
+type SequencerChain = [
+	InputComponentDef,
+	...MiddleComponentDef[],
+	OutputComponentDef
+];
+export type SequencerChains = SequencerChain[];

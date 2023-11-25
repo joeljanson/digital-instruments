@@ -9,10 +9,10 @@ const InputComponent: React.FC<InputComponentDef> = ({
 	...otherProps
 }) => {
 	useEffect(() => {
-		console.log("sequence area is rerendered?");
+		//console.log("sequence area is rerendered?");
 		const keys = new Keyboard(async (event: TriggerEvent) => {
-			console.log("Sends an out event!");
-			console.log(`INPUT_${otherProps.index}`);
+			/* console.log("Sends an out event!");
+			console.log(`INPUT_${otherProps.index}`); */
 			globalEmitter.emit(`INPUT_${otherProps.index}`, event);
 		}, type);
 

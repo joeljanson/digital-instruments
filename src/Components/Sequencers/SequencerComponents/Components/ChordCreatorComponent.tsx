@@ -14,8 +14,8 @@ const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 		let output = `INPUT_${otherProps.index ? otherProps.index : 0}`;
 
 		const triggerEventHandler = async (event: TriggerEvent) => {
-			console.log("Triggers event!");
-			console.log("Chords are:", chords);
+			/* console.log("Triggers event!");
+			console.log("Chords are:", chords); */
 
 			const chord = chords.find((chord) => chord.note === event.note);
 			const notes = chord
@@ -36,7 +36,7 @@ const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 			}
 		};
 
-		console.log(input);
+		/* console.log(input); */
 		globalEmitter.on(input, triggerEventHandler);
 		return () => {
 			globalEmitter.off(input, triggerEventHandler);

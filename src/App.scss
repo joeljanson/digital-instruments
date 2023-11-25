@@ -69,7 +69,7 @@ h1 {
 	margin: 0px $margin;
 	border: 1px solid white;
 	border-radius: $borderRadius;
-	&.instrument {
+	&.instrument-area {
 		flex-grow: 3;
 	}
 	.submodule-area-wrapper {
@@ -81,6 +81,9 @@ h1 {
 		border: 1px solid white;
 		border-radius: $borderRadius;
 		/* Apply margin to all elements except the first one */
+		&:not(:first-child) {
+			margin-top: $margin * 4;
+		}
 		overflow: hidden;
 	}
 }

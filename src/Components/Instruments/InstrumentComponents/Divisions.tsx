@@ -1,16 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { Channel, Player, ToneAudioBuffer, Volume, now } from "tone";
-import { globalEmitter } from "../../App";
-import { TriggerEvent } from "../Sequencers/Helpers/Events";
-import BufferSources from "../Common/BufferSources";
-import "./InstrumentArea.scss";
-import { EffectsPool } from "./InstrumentEffects/EffectsPool";
+import { globalEmitter } from "../../../App";
+import { TriggerEvent } from "../../Sequencers/Helpers/Events";
+import BufferSources from "../../Common/BufferSources";
+import "../InstrumentArea.scss";
+import { EffectsPool } from "../Helpers/EffectsPool";
 
-interface InstrumentProps {
-	triggerEventName: string;
-}
-
-const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
+const Divisions: React.FC = () => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const reversedBufferRef = useRef<ToneAudioBuffer | null>(null);
 	const effectsPool = useRef<EffectsPool>(new EffectsPool(16));
@@ -180,13 +176,14 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 						player.start(startTime, startOffset, event.duration);
 					} else {
 						console.log("Duration is not defined");
-						player.start(startTime, startOffset);
-						player.loop = true;
-						player.loopStart = startOffset;
-						player.loopEnd =
+						const stop =
 							startOffset + 1.3 > buffer.duration
 								? buffer.duration
 								: startOffset + 1.3;
+						player.start(startTime, startOffset, 1);
+						player.loop = false;
+						player.loopStart = startOffset;
+						player.loopEnd = stop;
 					}
 				}
 			} else if (event.eventType === "noteOff") {
@@ -203,7 +200,7 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 			}
 		};
 
-		globalEmitter.on(triggerEventName, triggerEventHandler);
+		globalEmitter.on("SEQUENCER_EVENT", triggerEventHandler);
 
 		const loadedSettings = generateSettings(50);
 		preloadAudio();
@@ -213,11 +210,11 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 		const volume = new Volume(0).connect(channel);
 		// Don't forget to clean up the event listener
 		return () => {
-			globalEmitter.off(triggerEventName, triggerEventHandler);
+			globalEmitter.off("SEQUENCER_EVENT", triggerEventHandler);
 			playerMap.current.forEach((player) => player.dispose());
 			playerMap.current.clear();
 		};
-	}, [triggerEventName]);
+	}, []);
 
 	return (
 		<div className="module-area-wrapper instrument">

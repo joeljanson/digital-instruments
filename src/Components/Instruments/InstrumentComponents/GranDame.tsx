@@ -7,10 +7,10 @@ import {
 	Volume,
 	now,
 } from "tone";
-import { globalEmitter } from "../../App";
-import { TriggerEvent } from "../Sequencers/Helpers/Events";
-import BufferSources from "../Common/BufferSources";
-import "./InstrumentArea.scss";
+import { globalEmitter } from "../../../App";
+import { TriggerEvent } from "../../Sequencers/Helpers/Events";
+import BufferSources from "../../Common/BufferSources";
+import "../InstrumentArea.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";
 
 const GranDame: React.FC = () => {
@@ -186,9 +186,19 @@ const GranDame: React.FC = () => {
 		}
 	};
 
+	const divStyle = {
+		backgroundImage: `url(${"https://i.pinimg.com/564x/76/34/c5/7634c5c39b81748de0229da9a218db09.jpg"})`,
+		height: "100%", // Adjust the height as needed
+		backgroundSize: "cover", // This ensures the image covers the whole div
+		backgroundRepeat: "no-repeat", // This prevents the image from repeating
+	};
+
 	return (
 		<div className="module-area-wrapper instrument">
-			<div className="submodule-area-wrapper instrument-main-area">
+			<div
+				style={divStyle}
+				className="submodule-area-wrapper instrument-main-area"
+			>
 				Gran dame!
 				<div>
 					<input
@@ -220,10 +230,6 @@ const GranDame: React.FC = () => {
 						onChange={handleDetuneSemiChange}
 					/>
 				</div>
-				<img
-					src="https://i.pinimg.com/564x/15/7b/30/157b3075a118e42f0ce58d79b21457de.jpg"
-					alt="inspiration"
-				/>
 			</div>
 			<BufferSources bufferSourceUpdated={bufferSourceUpdated}></BufferSources>
 		</div>

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "./App.scss";
-import Divisions from "./Components/Instruments/Divisions";
+import Divisions from "./Components/Instruments/InstrumentComponents/Divisions";
 import { Emitter, ToneAudioBuffer, context, start } from "tone";
 import SequencerArea from "./Components/Sequencers/SequenceArea";
 import EffectsRack from "./Components/Audio-routing/Effect-components/EffectsRack";
 import DelayEffect from "./Components/Audio-routing/Effect-components/DelayEffect";
 import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
 import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
-import GranDame from "./Components/Instruments/GranDame";
-import { Chains } from "./Components/Sequencers/SequencerComponents/SequencerComponentInterfaces";
+import GranDame from "./Components/Instruments/InstrumentComponents/GranDame";
+import { SequencerChains } from "./Components/Sequencers/SequencerComponents/SequencerComponentInterfaces";
+import { InstrumentChain } from "./Components/Instruments/InstrumentComponents/InstrumentComponentInterfaces";
+import InstrumentArea from "./Components/Instruments/InstrumentArea";
 export const globalEmitter = new Emitter();
 
 /* TEST CHAIN */
 
-const chainsData: Chains = [
+const sequencerChainData: SequencerChains = [
 	[
 		{ name: "input", type: "all" }, // This matches InputComponentDef
 		{
@@ -24,12 +26,24 @@ const chainsData: Chains = [
 				{ note: 2, voicing: [0, 3, 7] },
 			],
 		}, // This matches ChordCreatorDef
-		/* { name: "stepsequencer", steps: 8 }, // This matches InputComponentDef */
+		{ name: "stepsequencer", steps: 8 }, // This matches InputComponentDef
 		{ name: "output", output: "SEQUENCER_EVENT" }, // This matches InputComponentDef
 	],
 	// ...additional chains
 ];
 
+const instrumentChainData: InstrumentChain = [
+	/* { name: "testinstrument" }, */
+	/* { name: "grandame", spread: 0 }, // This matches InputComponentDef */
+	{
+		name: "divisions",
+		loopDuration: 0,
+	}, // This matches InputComponentDef
+	{
+		name: "divisions",
+		loopDuration: 0,
+	}, // This matches InputComponentDef
+];
 function App() {
 	const [toneStarted, setToneStarted] = useState(false);
 	const startTone = async () => {
@@ -81,12 +95,9 @@ function App() {
 				)}
 			</div>
 			<header className="main-area">
-				<SequencerArea chains={chainsData} />
-				{/* <StepSequencer /> */}
-				{/* <ChordCreator /> */}
-				{/* <Divisions triggerEventName="SEQUENCER_EVENT" /> */}
-				<GranDame></GranDame>
-				<GranDame></GranDame>
+				<SequencerArea chains={sequencerChainData} />
+				<InstrumentArea chains={instrumentChainData} />
+
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
 						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}

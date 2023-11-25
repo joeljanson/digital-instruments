@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import "./SequencerArea.scss";
 import {
-	Chains,
 	ComponentDef,
+	SequencerChains,
 	componentMap,
 } from "./SequencerComponents/SequencerComponentInterfaces";
 
 // Assuming you're passing this as a prop to your component
 interface SequencerModuleProps {
-	chains: Chains;
+	chains: SequencerChains;
 }
 
 function SequencerArea({ chains }: SequencerModuleProps) {
