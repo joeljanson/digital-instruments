@@ -18,7 +18,10 @@ const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 			console.log("Chords are:", chords);
 
 			const chord = chords.find((chord) => chord.note === event.note);
-			const notes = chord ? chord.voicing : undefined;
+			const notes = chord
+				? chord.voicing.map((note) => event.note + note)
+				: undefined;
+
 			if (notes) {
 				const eventWithNotes = {
 					...event,

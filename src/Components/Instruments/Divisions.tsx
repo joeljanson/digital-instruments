@@ -108,6 +108,7 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 			availableDelays.current?.push(feedbackDelay);
 		}
 	}; */
+	const playerMap = useRef<Map<number, Player>>(new Map());
 
 	useEffect(() => {
 		console.log("Use effect is run in division");
@@ -126,6 +127,8 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 			});
 			if (event.eventType === "noteOn") {
 				//console.log("Division receives note on");
+				playerMap.current.set(event.note, player);
+
 				const startTime = event.startTime ?? now();
 
 				if (bufferRef.current && reversedBufferRef.current) {
@@ -173,8 +176,10 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 
 					//console.log(startTime);
 					if (event.duration) {
+						console.log("Duration is defined");
 						player.start(startTime, startOffset, event.duration);
 					} else {
+						console.log("Duration is not defined");
 						player.start(startTime, startOffset);
 						player.loop = true;
 						player.loopStart = startOffset;
@@ -185,10 +190,16 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 					}
 				}
 			} else if (event.eventType === "noteOff") {
-				console.log("shoud release effect chain");
+				console.log("Note off in division");
+				const player = playerMap.current.get(event.note);
+				if (player) {
+					player.stop();
+					player.loop = false;
+					player.dispose();
+					playerMap.current.delete(event.note); // Remove from map after stopping
+				}
+
 				effectsPool.current.releaseEffectChain(event.note);
-				player.stop(now());
-				player.dispose();
 			}
 		};
 
@@ -203,6 +214,8 @@ const Divisions: React.FC<InstrumentProps> = ({ triggerEventName }) => {
 		// Don't forget to clean up the event listener
 		return () => {
 			globalEmitter.off(triggerEventName, triggerEventHandler);
+			playerMap.current.forEach((player) => player.dispose());
+			playerMap.current.clear();
 		};
 	}, [triggerEventName]);
 

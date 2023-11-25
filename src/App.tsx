@@ -21,9 +21,10 @@ const chainsData: Chains = [
 			chords: [
 				{ note: 0, voicing: [0, 4, 7] },
 				{ note: 4, voicing: [0, 5, 12] },
+				{ note: 2, voicing: [0, 3, 7] },
 			],
 		}, // This matches ChordCreatorDef
-		{ name: "stepsequencer", steps: 8 }, // This matches InputComponentDef
+		/* { name: "stepsequencer", steps: 8 }, // This matches InputComponentDef */
 		{ name: "output", output: "SEQUENCER_EVENT" }, // This matches InputComponentDef
 	],
 	// ...additional chains
@@ -83,9 +84,9 @@ function App() {
 				<SequencerArea chains={chainsData} />
 				{/* <StepSequencer /> */}
 				{/* <ChordCreator /> */}
-				<Divisions triggerEventName="SEQUENCER_EVENT" />
-				{/* <GranDame></GranDame> */}
-				{/* <GranDame></GranDame> */}
+				{/* <Divisions triggerEventName="SEQUENCER_EVENT" /> */}
+				<GranDame></GranDame>
+				<GranDame></GranDame>
 				<div className="module-area-wrapper">
 					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
 						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}

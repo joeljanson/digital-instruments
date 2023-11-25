@@ -32,6 +32,7 @@ h1 {
 	text-align: center;
 	height: 100vh; /* Defined height for the parent */
 	max-width: 100vw;
+	width: 100vw;
 	max-height: 100vh; /* Keeps the minimum height */
 	align-items: stretch;
 	flex-direction: column;
@@ -80,5 +81,6 @@ h1 {
 		border: 1px solid white;
 		border-radius: $borderRadius;
 		/* Apply margin to all elements except the first one */
+		overflow: hidden;
 	}
 }

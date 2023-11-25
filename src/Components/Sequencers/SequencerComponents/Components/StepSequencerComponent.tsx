@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { globalEmitter } from "../../../../App";
 import { TriggerEvent } from "../../Helpers/Events";
 import { StepSequencerDef } from "../SequencerComponentInterfaces";
@@ -9,6 +9,8 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 	steps,
 	...otherProps
 }) => {
+	const [subdivision, setSubdivision] = useState("16n"); // Step 1: Subdivision state
+
 	useEffect(() => {
 		console.log("Chord creator is rerendered?");
 
@@ -47,7 +49,7 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 							const eventWithDuration = {
 								...event,
 								note: note,
-								duration: "16n",
+								duration: subdivision,
 								startTime: time,
 								//settings: { pan: -1 + Math.random() * 2 },
 							};
@@ -55,7 +57,7 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 
 							globalEmitter.emit(output, eventWithDuration);
 						}
-					}, "16n");
+					}, subdivision);
 
 					loop.start();
 					Transport.start();
@@ -83,9 +85,23 @@ const StepSequencerComponent: React.FC<StepSequencerDef> = ({
 		};
 	}, [steps, otherProps]);
 
+	const handleSubdivisionChange = (
+		event: React.ChangeEvent<HTMLSelectElement>
+	) => {
+		setSubdivision(event.target.value);
+	};
 	return (
 		<div className="module-area-wrapper">
-			Step sequencer<div>Set step duration</div>
+			Step sequencer{" "}
+			<div>
+				Set step duration:
+				<select value={subdivision} onChange={handleSubdivisionChange}>
+					<option value="4n">Quarter Note</option>
+					<option value="8n">Eighth Note</option>
+					<option value="16n">Sixteenth Note</option>
+					{/* Add more options as needed */}
+				</select>
+			</div>
 		</div>
 	);
 };
