@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./App.scss";
-import Divisions from "./Components/Instruments/InstrumentComponents/Divisions";
-import { Emitter, ToneAudioBuffer, context, start } from "tone";
+import { Emitter, context, start } from "tone";
+import SessionContextProvider from "./Session/SessionContextProvider";
 import SequencerArea from "./Components/Sequencers/SequenceArea";
 import EffectsRack from "./Components/Audio-routing/Effect-components/EffectsRack";
 import DelayEffect from "./Components/Audio-routing/Effect-components/DelayEffect";
 import ConvolverEffect from "./Components/Audio-routing/Effect-components/ConvolverEffect";
 import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
-import GranDame from "./Components/Instruments/InstrumentComponents/GranDame";
 import { SequencerChains } from "./Components/Sequencers/SequencerComponents/SequencerComponentInterfaces";
 import { InstrumentChain } from "./Components/Instruments/InstrumentComponents/InstrumentComponentInterfaces";
 import InstrumentArea from "./Components/Instruments/InstrumentArea";
+import Navigation from "./Navigation";
 export const globalEmitter = new Emitter();
 
 /* TEST CHAIN */
@@ -26,19 +26,20 @@ const sequencerChainData: SequencerChains = [
 				{ note: 2, voicing: [0, 3, 7] },
 			],
 		}, // This matches ChordCreatorDef
-		{ name: "stepsequencer", steps: 8 }, // This matches InputComponentDef
+		/* { name: "stepsequencer", steps: 8 }, // This matches InputComponentDef */
+		{ name: "euclideansequencer", steps: 8 }, // This matches InputComponentDef
 		{ name: "output", output: "SEQUENCER_EVENT" }, // This matches InputComponentDef
 	],
 	// ...additional chains
 ];
 
 const instrumentChainData: InstrumentChain = [
-	/* { name: "testinstrument" }, */
+	/* { name: "testinstrument", usesBuffer: true }, // This matches InputComponentDef */
 	/* { name: "grandame", spread: 0 }, // This matches InputComponentDef */
-	{
+	/* {
 		name: "divisions",
 		loopDuration: 0,
-	}, // This matches InputComponentDef
+	}, // This matches InputComponentDef */
 	{
 		name: "divisions",
 		loopDuration: 0,
@@ -66,49 +67,30 @@ function App() {
 			// Context has been closed
 			setToneStarted(false);
 		}
-
-		/* async function processDrumSamples(url: string) {
-			try {
-				const buffer = await ToneAudioBuffer.load(url);
-				const audioBuffer = new ToneAudioBuffer(buffer);
-
-				const detector = new StripSilence(0.9, 0.05); // Threshold set to 0.1
-				const onsets = await detector.findSampleOnsets(audioBuffer);
-				console.log("Onsets:", onsets);
-			} catch (error) {
-				console.error("Error processing drum samples:", error);
-			}
-		}
-
-		// Example usage
-		processDrumSamples(beat1); */
 	}, []);
 
 	return (
-		<div className="App" onClick={startTone}>
-			<div className="top-bar-area">
-				Top bar area{" "}
-				{!!!toneStarted ? (
-					<h1>Click anywhere to unmute sound.</h1>
-				) : (
-					"Tone started!"
-				)}
-			</div>
-			<header className="main-area">
-				<SequencerArea chains={sequencerChainData} />
-				<InstrumentArea chains={instrumentChainData} />
-
-				<div className="module-area-wrapper">
-					<EffectsRack receive="effectsRackIn" send="effectsRackOut">
-						{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
-					</EffectsRack>
-					<TapeMachine
-						receive="effectsRackOut"
-						send="tapeMachineOut"
-					></TapeMachine>
+		<SessionContextProvider>
+			<div className="App" onClick={startTone}>
+				<div className="top-bar-area">
+					<Navigation toneStarted={toneStarted} />
 				</div>
-			</header>
-		</div>
+				<header className="main-area">
+					<SequencerArea chains={sequencerChainData} />
+					<InstrumentArea chains={instrumentChainData} />
+
+					<div className="module-area-wrapper">
+						<EffectsRack receive="effectsRackIn" send="effectsRackOut">
+							{[<ConvolverEffect key="2" />, <DelayEffect key="1" />]}
+						</EffectsRack>
+						<TapeMachine
+							receive="effectsRackOut"
+							send="tapeMachineOut"
+						></TapeMachine>
+					</div>
+				</header>
+			</div>
+		</SessionContextProvider>
 	);
 }
 

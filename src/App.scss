@@ -44,6 +44,11 @@ h1 {
 	}
 }
 
+.top-bar {
+	display: flex;
+	flex-direction: row;
+}
+
 .main-area {
 	display: flex;
 	min-height: 0;

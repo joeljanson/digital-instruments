@@ -5,6 +5,7 @@ import GranDame from "./GranDame";
 interface BaseInstrumentDef {
 	name: string;
 	index?: number;
+	usesBuffer?: boolean;
 	// ... common properties
 }
 

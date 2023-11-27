@@ -137,7 +137,7 @@ const Divisions: React.FC = () => {
 					//chain.panner.pan.rampTo(0, 0.3);
 
 					//Update the delay
-					chain.delay.delayTime.rampTo(currentLoadedSettings.delay.time, 0);
+					/* chain.delay.delayTime.rampTo(currentLoadedSettings.delay.time, 0);
 					chain.delay.wet.rampTo(currentLoadedSettings.delay.mix, 0);
 					//chain.delay.wet.rampTo(0, 0.3);
 					chain.delay.feedback.rampTo(currentLoadedSettings.delay.feedback, 0);
@@ -149,14 +149,14 @@ const Divisions: React.FC = () => {
 					chain.filter.frequency.rampTo(
 						currentLoadedSettings.filter.frequency,
 						0
-					);
+					); */
 
 					const buffer = currentLoadedSettings.reversed
 						? bufferRef.current!
 						: reversedBufferRef.current!;
 
 					player.buffer = buffer;
-					player.playbackRate = currentLoadedSettings.playbackRate;
+					player.playbackRate = 1; //currentLoadedSettings.playbackRate;
 					player.chain(
 						chain.reverb,
 						//chain.delay,
