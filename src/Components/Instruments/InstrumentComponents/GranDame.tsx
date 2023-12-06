@@ -82,10 +82,10 @@ const GranDame: React.FC = () => {
 						console.log("note to play: ", note);
 						const startTime = now() + startTimes[index];
 						const envelope = new AmplitudeEnvelope({
-							attack: 0.4,
+							attack: 0.1,
 							decay: 0.2,
 							sustain: 1.0,
-							release: 4.0,
+							release: 1.0,
 							attackCurve: "linear",
 						}).connect(volume);
 
@@ -112,24 +112,41 @@ const GranDame: React.FC = () => {
 						envelope.triggerAttack();
 						players.current.push({ player: player, note: note });
 
-						await event.promise;
-						// Trigger the envelope release
-						envelope.triggerRelease();
-
-						// Schedule the stop and dispose after the release time
-						setTimeout(() => {
-							const playerIndex = players.current.findIndex(
-								(playerRef) => playerRef.player === player
-							);
-							if (playerIndex > -1) {
-								const internalPlayer = players.current[playerIndex].player;
-								internalPlayer.stop();
-								internalPlayer.dispose();
-								players.current.splice(playerIndex, 1);
-							} else {
-								console.error("Player not found");
-							}
-						}, Time(envelope.release).toMilliseconds()); // Convert seconds to milliseconds
+						if (event.duration) {
+							envelope.triggerRelease("+" + event.duration);
+							// Schedule the stop and dispose after the release time
+							setTimeout(() => {
+								const playerIndex = players.current.findIndex(
+									(playerRef) => playerRef.player === player
+								);
+								if (playerIndex > -1) {
+									const internalPlayer = players.current[playerIndex].player;
+									internalPlayer.stop();
+									internalPlayer.dispose();
+									players.current.splice(playerIndex, 1);
+								} else {
+									console.error("Player not found");
+								}
+							}, Time(envelope.release).toMilliseconds()); // Convert seconds to milliseconds
+						} else {
+							await event.promise;
+							// Trigger the envelope release
+							envelope.triggerRelease();
+							// Schedule the stop and dispose after the release time
+							setTimeout(() => {
+								const playerIndex = players.current.findIndex(
+									(playerRef) => playerRef.player === player
+								);
+								if (playerIndex > -1) {
+									const internalPlayer = players.current[playerIndex].player;
+									internalPlayer.stop();
+									internalPlayer.dispose();
+									players.current.splice(playerIndex, 1);
+								} else {
+									console.error("Player not found");
+								}
+							}, Time(envelope.release).toMilliseconds()); // Convert seconds to milliseconds
+						}
 					});
 				}
 			}

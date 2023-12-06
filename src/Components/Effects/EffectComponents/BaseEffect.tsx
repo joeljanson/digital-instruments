@@ -4,16 +4,22 @@ import { Channel } from "tone";
 export interface EffectProps {
 	effectInput?: string;
 	effectOutput?: string;
+	bypassed?: boolean;
 	input?: Channel | null;
 	output?: Channel | null;
+	name?: string;
 }
 
 // Custom hook for managing audio
-export function useChannels({ effectInput, effectOutput }: EffectProps) {
+export function useChannels({
+	effectInput,
+	effectOutput,
+	bypassed,
+}: EffectProps) {
 	const inputRef = useRef<Channel | null>(null);
 	const outputRef = useRef<Channel | null>(null);
 	const bypassChannelRef = useRef<Channel | null>(null);
-	const [bypass, setBypass] = useState(false); // New state
+	const [bypass, setBypass] = useState(bypassed); // New state
 
 	const toggleBypass = () => {
 		const output = outputRef.current;
@@ -53,10 +59,14 @@ export function useChannels({ effectInput, effectOutput }: EffectProps) {
 			outputRef.current = outputChannel; // Use ref here
 
 			const bypassChannel = new Channel({ volume: 0, channelCount: 2 });
-			bypassChannel.volume.value = -Infinity;
 			bypassChannel.receive(`${effectInput}`);
 			bypassChannel.send(`${effectOutput}`);
 			bypassChannelRef.current = bypassChannel; // Use ref here
+
+			if (bypass) {
+				bypassChannel.volume.value = 0;
+				outputChannel.volume.value = -Infinity;
+			}
 		};
 
 		setupChannels();

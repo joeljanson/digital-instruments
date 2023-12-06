@@ -1,0 +1,83 @@
+@import "../../colors";
+.effect-area {
+	overflow: scroll;
+}
+.base-effect {
+	display: flex;
+	overflow: hidden;
+	flex-direction: column;
+	border: 1px solid $border_color;
+	margin-bottom: 10px;
+	border-radius: 10px;
+	background-color: $main_bg_color;
+	transition: background-color 0.3s ease;
+	.controls {
+		padding: 5px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		border-bottom: 1px solid $border_color;
+		.bypass-button {
+			width: 20px;
+			height: 20px;
+			border: none;
+			background: none;
+			padding: 0;
+			margin: 0;
+			cursor: pointer;
+			border-radius: 50%;
+			background-color: $white;
+			transition: background-color 0.3s ease;
+		}
+	}
+	.effect-area {
+		overflow: hidden;
+		position: relative;
+		height: 100px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transition: filter 0.3s ease; /* Added ease transition */
+		::before {
+			overflow: hidden;
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			border-radius: 10px;
+			bottom: 0;
+			background: rgba(
+				0,
+				0,
+				0,
+				0
+			); /* Black tint with 50% opacity - adjust as needed */
+			pointer-events: none; /* Prevents the overlay from blocking interactions */
+			transition: background 0.3s ease; /* Adjust as needed */
+		}
+	}
+	&.bypassed {
+		transition: background-color 0.3s ease;
+
+		.bypass-button {
+			background-color: $main_bg_color;
+			border: 1px solid $border_color;
+			transition: background-color 0.3s ease;
+		}
+		.effect-area {
+			filter: blur(
+				2px
+			); /* Adjust the pixel value to control the amount of blur */
+			transition: filter 0.3s ease; /* Added ease transition */
+			::before {
+				background: rgba(
+					0,
+					0,
+					0,
+					0.5
+				); /* Black tint with 50% opacity - adjust as needed */
+			}
+		}
+	}
+}

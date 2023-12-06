@@ -64,7 +64,7 @@ const EuclideanSequencerComponent: React.FC<EuclideanSequencerDef> = ({
 
 	useEffect(() => {
 		console.log("Chord creator is rerendered?");
-		const patternOne = bjorklund(5, steps);
+		const patterns = [bjorklund(3, steps), bjorklund(4, steps)];
 
 		const input = `INPUT_${otherProps.index ? otherProps.index - 1 : 0}`;
 		let output = `INPUT_${otherProps.index ? otherProps.index : 0}`;
@@ -97,24 +97,27 @@ const EuclideanSequencerComponent: React.FC<EuclideanSequencerDef> = ({
 							.flat();
 						const notesToPlay = [];
 						if (allNotesFlattened.length > 0) {
-							if (patternOne[loopIndex % patternOne.length]) {
-								console.log("Strike a note!");
-								//const note = allNotesFlattened[0];
-								const note =
-									allNotesFlattened[loopIndex % allNotesFlattened.length];
-								console.log("note", note);
-								notesToPlay.push(note);
-								const eventWithDuration = {
-									...event,
-									note: note,
-									duration: subdivision,
-									startTime: time,
-									//settings: { pan: -1 + Math.random() * 2 },
-								};
-								globalEmitter.emit(output, eventWithDuration);
-							} else {
-								console.log("Dont strike a note!");
-							}
+							patterns.forEach((pattern, index) => {
+								if (pattern[loopIndex % pattern.length]) {
+									console.log("Strike a note!");
+									//const note = allNotesFlattened[index];
+									const note =
+										allNotesFlattened[loopIndex % allNotesFlattened.length];
+									console.log("note", note);
+									notesToPlay.push(note);
+									const eventWithDuration = {
+										...event,
+										note: note,
+										duration: subdivision,
+										startTime: time,
+										//settings: { pan: -1 + Math.random() * 2 },
+									};
+									globalEmitter.emit(output, eventWithDuration);
+								} else {
+									console.log("Dont strike a note!");
+								}
+							});
+
 							loopIndex++;
 						}
 					}, subdivision);

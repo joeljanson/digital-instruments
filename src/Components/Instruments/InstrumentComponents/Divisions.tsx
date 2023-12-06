@@ -216,15 +216,18 @@ const Divisions: React.FC = () => {
 		};
 	}, []);
 
+	const divStyle = {
+		backgroundImage: `url(${"https://i.pinimg.com/474x/9b/4b/e6/9b4be63c10733f63a23b78f732906bd5.jpg"})`,
+		height: "100%", // Adjust the height as needed
+		backgroundSize: "cover", // This ensures the image covers the whole div
+		backgroundRepeat: "no-repeat", // This prevents the image from repeating
+	};
+
 	return (
 		<div className="module-area-wrapper instrument">
-			<div className="submodule-area-wrapper">
+			<div style={divStyle} className="submodule-area-wrapper">
 				<div className="instrument-main-area">
 					<h1>Main area</h1>
-					<img
-						src="https://i.pinimg.com/474x/9b/4b/e6/9b4be63c10733f63a23b78f732906bd5.jpg"
-						alt="inspiration"
-					/>
 				</div>
 			</div>
 			<BufferSources bufferSourceUpdated={bufferSourceUpdated}></BufferSources>

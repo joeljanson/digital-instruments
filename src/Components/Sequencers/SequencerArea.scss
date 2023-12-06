@@ -1,4 +1,6 @@
 .sequencer-area {
+	display: flex;
+	flex-direction: row;
 	overflow-y: scroll;
 	justify-content: flex-start;
 }

@@ -1,6 +1,7 @@
 .tape-machine {
 	display: flex;
 	flex-direction: column;
+	overflow: scroll !important;
 	button {
 		margin-top: 10px;
 		border: none;

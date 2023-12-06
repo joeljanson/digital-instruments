@@ -6,7 +6,7 @@ type EffectComponent = React.ReactElement<{
 	lastEffect: boolean;
 }>;
 
-const EffectsRack: React.FC<{
+const EffectArea: React.FC<{
 	receive: string;
 	send: string;
 	children: React.ReactNode;
@@ -44,9 +44,11 @@ const EffectsRack: React.FC<{
 		setEffectComponents(
 			React.Children.map(trueChildren, (child, index) => {
 				if (
-					React.isValidElement<{ effectInput?: string; effectOutput?: string }>(
-						child
-					)
+					React.isValidElement<{
+						effectInput?: string;
+						effectOutput?: string;
+						name?: string;
+					}>(child)
 				) {
 					let inputString = "effectRack-" + (index - 1).toString() + "-out";
 					if (index === 0) {
@@ -56,6 +58,7 @@ const EffectsRack: React.FC<{
 					return React.cloneElement(child, {
 						effectInput: inputString,
 						effectOutput: outputString,
+						name: "delay",
 					});
 				}
 				return child;
@@ -66,4 +69,4 @@ const EffectsRack: React.FC<{
 	return <div className="submodule-area-wrapper">{effectComponents}</div>;
 };
 
-export default EffectsRack;
+export default EffectArea;
