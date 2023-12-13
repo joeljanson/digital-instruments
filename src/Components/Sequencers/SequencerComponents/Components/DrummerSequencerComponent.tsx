@@ -22,8 +22,7 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 		let loopStarted = false;
 		let stopId: any;
 
-		const part: Part = new Part();
-		part.loop = true;
+		let part: Part = new Part();
 
 		let loopIndex = 0;
 		const updatePart = () => {
@@ -73,6 +72,9 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 					notes: event.notes ? event.notes : [event.note],
 					addedOrder: currentlyPressedNotes.size,
 				});
+				if (!part) {
+					part = new Part();
+				}
 
 				updatePart();
 				part.callback = (time, object) => {
@@ -90,10 +92,16 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 				if (loopStarted === false) {
 					//part.loopStart = now();
 					console.log("Transport state: ", Transport.state);
-
-					Transport.start(now(), "0:0:0");
-					part.start();
-					part.loopEnd = Time(length).toBarsBeatsSixteenths();
+					if (Transport.state === "started") {
+						Transport.position = "0:0:1";
+						console.log("Transport position", Transport.position);
+					} else {
+						Transport.start(now(), "0:0:0");
+						console.log("Transport position", Transport.position);
+					}
+					part.start(0);
+					part.loopEnd = "1:0:0"; //Time(length).toBarsBeatsSixteenths();
+					part.loop = 1000;
 					loopStarted = true;
 				}
 			} else if (event.eventType === "noteOff") {
@@ -111,8 +119,10 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 						console.log("Stopping part");
 						//part.loop = false;
 						part.stop();
-						//Transport.stop();
+						part.dispose();
+						Transport.stop();
 						loopStarted = false;
+						stopId = "";
 					}, nextLoopRestart * 1000);
 					/* stopId = Transport.scheduleOnce((time) => {
 						
