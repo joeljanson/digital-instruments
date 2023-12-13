@@ -19,8 +19,6 @@ export function useBaseInstrument({
 
 	useEffect(() => {
 		// Setup instrument
-		console.log("Sets up instrument");
-
 		const internalOutputChannel = new Channel({
 			volume: 0,
 			channelCount: 2,
@@ -34,12 +32,9 @@ export function useBaseInstrument({
 	}, []); // Run only when effectIndex changes
 
 	const toggleBypass = () => {
-		console.log("toggleBypass in BaseInstrument");
 		if (bypass) {
-			console.log("Should raise the effect!");
 			outputChannelRef.current?.volume.linearRampTo(0, 0.1);
 		} else {
-			console.log("Should lower the effect!");
 			outputChannelRef.current?.volume.linearRampTo(-Infinity, 0.1);
 		}
 		setBypass(!bypass);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { globalEmitter } from "../../../../App";
 import { TriggerEvent } from "../../Helpers/Events";
 import { DrummerSequencerDef } from "../SequencerComponentInterfaces";
-import { Part, Time, Transport } from "tone";
+import { Part, Time, Transport, now } from "tone";
 
 const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 	length,
@@ -20,9 +20,9 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 			{ id: number; notes?: number[]; addedOrder: number }
 		>();
 		let loopStarted = false;
-		let stopId: number = 0;
+		let stopId: any;
 
-		let part: Part = new Part();
+		const part: Part = new Part();
 		part.loop = true;
 
 		let loopIndex = 0;
@@ -33,7 +33,6 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 			);
 
 			part.clear();
-			part.loopEnd = length;
 			if (realPattern.length !== 0) {
 				realPattern[0].pattern.forEach((pattern) => {
 					part.add(pattern);
@@ -68,7 +67,7 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 		const triggerEventHandler = async (event: TriggerEvent) => {
 			console.log("Triggers event in Drummer!");
 			if (event.eventType === "noteOn") {
-				Transport.clear(stopId);
+				clearTimeout(stopId);
 				currentlyPressedNotes.set(event.note, {
 					id: event.note,
 					notes: event.notes ? event.notes : [event.note],
@@ -76,37 +75,48 @@ const DrummerSequencerComponent: React.FC<DrummerSequencerDef> = ({
 				});
 
 				updatePart();
+				part.callback = (time, object) => {
+					console.log("object", object);
+					const eventWithDuration = {
+						...event,
+						notes: object.notes,
+						duration: "4n",
+						startTime: time,
+					};
+					globalEmitter.emit(output, eventWithDuration);
+				};
+				part.loop = true;
 
 				if (loopStarted === false) {
-					part.callback = (time, object) => {
-						console.log("object", object);
-						const eventWithDuration = {
-							...event,
-							notes: object.notes,
-							duration: "4n",
-							startTime: time,
-						};
-						globalEmitter.emit(output, eventWithDuration);
-					};
+					//part.loopStart = now();
+					console.log("Transport state: ", Transport.state);
+
+					Transport.start(now(), "0:0:0");
 					part.start();
-					Transport.start();
+					part.loopEnd = Time(length).toBarsBeatsSixteenths();
 					loopStarted = true;
 				}
 			} else if (event.eventType === "noteOff") {
 				// Remove event.note from currentlyPressedNotes
 				currentlyPressedNotes.delete(event.note);
-				updatePart();
 
+				if (currentlyPressedNotes.size !== 0) {
+					updatePart();
+				}
 				if (currentlyPressedNotes.size === 0) {
 					const nextLoopRestart =
 						-0.1 + (1 - part.progress) * Time(length).toSeconds();
 					/* const nextLoopRestart = Transport.nextSubdivision("1m"); */
-					stopId = Transport.scheduleOnce((time) => {
+					stopId = setTimeout(() => {
 						console.log("Stopping part");
+						//part.loop = false;
 						part.stop();
-						Transport.stop();
+						//Transport.stop();
 						loopStarted = false;
-					}, "+" + nextLoopRestart);
+					}, nextLoopRestart * 1000);
+					/* stopId = Transport.scheduleOnce((time) => {
+						
+					}, "+" + nextLoopRestart); */
 					globalEmitter.emit(output, event);
 				}
 			}

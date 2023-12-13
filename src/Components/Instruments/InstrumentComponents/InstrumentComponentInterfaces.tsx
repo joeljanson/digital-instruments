@@ -1,5 +1,6 @@
 import TestInstrument from "./BaseInstrument/TestInstrument";
 import Divisions from "./Divisions";
+import Drummer from "./Drummer";
 import GranDame from "./GranDame";
 
 interface BaseInstrumentDef {
@@ -37,6 +38,7 @@ type InstrumentComponentMap = {
 export const instrumentComponentMap: InstrumentComponentMap = {
 	grandame: GranDame,
 	divisions: Divisions,
+	drummer: Drummer,
 	testinstrument: TestInstrument,
 	// other component mappings
 };
