@@ -1,4 +1,5 @@
 import ChordCreatorComponent from "./Components/ChordCreatorComponent";
+import DrummerSequencerComponent from "./Components/DrummerSequencerComponent";
 import EuclideanSequencerComponent from "./Components/EuclideanSequencerComponent";
 import InputComponent from "./Components/InputComponent";
 import OutputComponent from "./Components/OutputComponent";
@@ -32,18 +33,25 @@ export interface EuclideanSequencerDef extends BaseComponentDef {
 	steps: number;
 	// Other chord-creator-specific properties
 }
+export interface DrummerSequencerDef extends BaseComponentDef {
+	length: "1m" | "2m" | "4m" | "8m";
+	patterns: { note: string; pattern: { time: string; notes: number[] }[] }[];
+	// Other chord-creator-specific properties
+}
 
 export type ComponentDef =
 	| InputComponentDef
 	| ChordCreatorDef
 	| StepSequencerDef
 	| EuclideanSequencerDef
+	| DrummerSequencerDef
 	| OutputComponentDef;
 
 type MiddleComponentDef =
 	| ChordCreatorDef
 	| StepSequencerDef
-	| EuclideanSequencerDef; // Add other component types as needed
+	| EuclideanSequencerDef
+	| DrummerSequencerDef; // Add other component types as needed, Has to be added above as well
 
 /* Component mappings */
 type ComponentMap = {
@@ -55,6 +63,7 @@ export const componentMap: ComponentMap = {
 	chordcreator: ChordCreatorComponent,
 	stepsequencer: StepSequencerComponent,
 	euclideansequencer: EuclideanSequencerComponent,
+	drummersequencer: DrummerSequencerComponent,
 	output: OutputComponent,
 	// other component mappings
 };

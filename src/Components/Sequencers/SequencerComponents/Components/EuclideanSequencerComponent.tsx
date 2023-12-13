@@ -132,7 +132,6 @@ const EuclideanSequencerComponent: React.FC<EuclideanSequencerDef> = ({
 
 				if (currentlyPressedNotes.size === 0) {
 					loop.stop();
-					Transport.stop();
 					loopStarted = false;
 					loopIndex = 0;
 				}

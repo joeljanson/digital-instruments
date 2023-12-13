@@ -5,8 +5,10 @@ import { TriggerEvent } from "../../Sequencers/Helpers/Events";
 import BufferSources from "../../Common/BufferSources";
 import "../InstrumentArea.scss";
 import { EffectsPool } from "../Helpers/EffectsPool";
+import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInterface";
+import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";
 
-const Divisions: React.FC = () => {
+const Divisions: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const reversedBufferRef = useRef<ToneAudioBuffer | null>(null);
 	const effectsPool = useRef<EffectsPool>(new EffectsPool(16));
@@ -108,36 +110,37 @@ const Divisions: React.FC = () => {
 
 	useEffect(() => {
 		console.log("Use effect is run in division");
-		const triggerEventHandler = async (event: TriggerEvent) => {
-			// Your event handling logic here
+		if (outputChannel) {
+			const triggerEventHandler = async (event: TriggerEvent) => {
+				// Your event handling logic here
 
-			const player = new Player({
-				fadeIn: 0,
-				fadeOut: 0,
-				onstop: () => {
-					setTimeout(() => {
-						player.dispose();
-						//console.log("Things disposed!");
-					}, 1000);
-				},
-			});
-			if (event.eventType === "noteOn") {
-				//console.log("Division receives note on");
-				playerMap.current.set(event.note, player);
+				const player = new Player({
+					fadeIn: 0,
+					fadeOut: 0,
+					onstop: () => {
+						setTimeout(() => {
+							player.dispose();
+							//console.log("Things disposed!");
+						}, 1000);
+					},
+				});
+				if (event.eventType === "noteOn") {
+					//console.log("Division receives note on");
+					playerMap.current.set(event.note, player);
 
-				const startTime = event.startTime ?? now();
+					const startTime = event.startTime ?? now();
 
-				if (bufferRef.current && reversedBufferRef.current) {
-					const currentLoadedSettings = loadedSettings[event.note];
+					if (bufferRef.current && reversedBufferRef.current) {
+						const currentLoadedSettings = loadedSettings[event.note];
 
-					const chain = effectsPool.current.getEffectChainForNote(event.note);
+						const chain = effectsPool.current.getEffectChainForNote(event.note);
 
-					//Update the panning
-					chain.panner.pan.value = event.settings?.pan ?? 0;
-					//chain.panner.pan.rampTo(0, 0.3);
+						//Update the panning
+						chain.panner.pan.value = event.settings?.pan ?? 0;
+						//chain.panner.pan.rampTo(0, 0.3);
 
-					//Update the delay
-					/* chain.delay.delayTime.rampTo(currentLoadedSettings.delay.time, 0);
+						//Update the delay
+						/* chain.delay.delayTime.rampTo(currentLoadedSettings.delay.time, 0);
 					chain.delay.wet.rampTo(currentLoadedSettings.delay.mix, 0);
 					//chain.delay.wet.rampTo(0, 0.3);
 					chain.delay.feedback.rampTo(currentLoadedSettings.delay.feedback, 0);
@@ -151,70 +154,70 @@ const Divisions: React.FC = () => {
 						0
 					); */
 
-					const buffer = currentLoadedSettings.reversed
-						? bufferRef.current!
-						: reversedBufferRef.current!;
+						const buffer = currentLoadedSettings.reversed
+							? bufferRef.current!
+							: reversedBufferRef.current!;
 
-					player.buffer = buffer;
-					player.playbackRate = 1; //currentLoadedSettings.playbackRate;
-					player.chain(
-						chain.reverb,
-						//chain.delay,
-						chain.filter,
-						//chain.panner,
-						volume
-					);
+						player.buffer = buffer;
+						player.playbackRate = 1; //currentLoadedSettings.playbackRate;
+						player.chain(
+							chain.reverb,
+							//chain.delay,
+							chain.filter,
+							//chain.panner,
+							volume
+						);
 
-					const duration = player.buffer.duration;
-					const pieces = duration / 34;
+						const duration = player.buffer.duration;
+						const pieces = duration / 34;
 
-					let startOffset = pieces * event.note;
+						let startOffset = pieces * event.note;
 
-					//console.log(startTime);
-					if (event.duration) {
-						console.log("Duration is defined");
-						player.start(startTime, startOffset, event.duration);
-					} else {
-						console.log("Duration is not defined");
-						const stop =
-							startOffset + 1.3 > buffer.duration
-								? buffer.duration
-								: startOffset + 1.3;
-						player.start(startTime, startOffset, 1);
-						player.loop = false;
-						player.loopStart = startOffset;
-						player.loopEnd = stop;
+						//console.log(startTime);
+						if (event.duration) {
+							console.log("Duration is defined");
+							player.start(startTime, startOffset, event.duration);
+						} else {
+							console.log("Duration is not defined");
+							const stop =
+								startOffset + 1.3 > buffer.duration
+									? buffer.duration
+									: startOffset + 1.3;
+							player.start(startTime, startOffset, 1);
+							player.loop = false;
+							player.loopStart = startOffset;
+							player.loopEnd = stop;
+						}
 					}
+				} else if (event.eventType === "noteOff") {
+					console.log("Note off in division");
+					const player = playerMap.current.get(event.note);
+					if (player) {
+						player.stop();
+						player.loop = false;
+						player.dispose();
+						playerMap.current.delete(event.note); // Remove from map after stopping
+					}
+
+					effectsPool.current.releaseEffectChain(event.note);
 				}
-			} else if (event.eventType === "noteOff") {
-				console.log("Note off in division");
-				const player = playerMap.current.get(event.note);
-				if (player) {
-					player.stop();
-					player.loop = false;
-					player.dispose();
-					playerMap.current.delete(event.note); // Remove from map after stopping
-				}
+			};
 
-				effectsPool.current.releaseEffectChain(event.note);
-			}
-		};
+			globalEmitter.on("SEQUENCER_EVENT", triggerEventHandler);
 
-		globalEmitter.on("SEQUENCER_EVENT", triggerEventHandler);
-
-		const loadedSettings = generateSettings(50);
-		preloadAudio();
-		console.log(loadedSettings);
-		const channel = new Channel({ volume: 0, channelCount: 2 });
-		channel.send("effectsRackIn");
-		const volume = new Volume(0).connect(channel);
-		// Don't forget to clean up the event listener
-		return () => {
-			globalEmitter.off("SEQUENCER_EVENT", triggerEventHandler);
-			playerMap.current.forEach((player) => player.dispose());
-			playerMap.current.clear();
-		};
-	}, []);
+			const loadedSettings = generateSettings(50);
+			preloadAudio();
+			console.log(loadedSettings);
+			outputChannel.send("effectsRackIn");
+			const volume = new Volume(0).connect(outputChannel);
+			// Don't forget to clean up the event listener
+			return () => {
+				globalEmitter.off("SEQUENCER_EVENT", triggerEventHandler);
+				playerMap.current.forEach((player) => player.dispose());
+				playerMap.current.clear();
+			};
+		}
+	}, [outputChannel]);
 
 	const divStyle = {
 		backgroundImage: `url(${"https://i.pinimg.com/474x/9b/4b/e6/9b4be63c10733f63a23b78f732906bd5.jpg"})`,
@@ -235,4 +238,4 @@ const Divisions: React.FC = () => {
 	);
 };
 
-export default Divisions;
+export default withBaseInstrumenttInterface(Divisions);
