@@ -1,33 +1,32 @@
 import React, { useEffect } from "react";
 import { globalEmitter } from "../../../../App";
 import { TriggerEvent } from "../../Helpers/Events";
-import { ChordCreatorDef } from "../SequencerComponentInterfaces";
+import { PannerDef } from "../SequencerComponentInterfaces";
 
-const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
-	chords,
-	...otherProps
-}) => {
+const PannerComponent: React.FC<PannerDef> = ({ range, ...otherProps }) => {
 	useEffect(() => {
 		console.log("Chord creator is rerendered?");
 
 		const input = `INPUT_${otherProps.index ? otherProps.index - 1 : 0}`;
-		let output = `INPUT_${otherProps.index ? otherProps.index : 0}`;
+		const output = `INPUT_${otherProps.index ? otherProps.index : 0}`;
 
 		const triggerEventHandler = async (event: TriggerEvent) => {
 			/* console.log("Triggers event!");
 			console.log("Chords are:", chords); */
 
-			const chord = chords.find((chord) => chord.note === event.note);
-			const notes = chord
-				? chord.voicing.map((note) => event.note + note)
-				: undefined;
+			const notes = event.notes ? event.notes : [event.note];
 
 			if (notes) {
-				const eventWithNotes = {
+				console.log("Strummer notes are:", notes);
+				let panning = notes.map((note: number, index: number) => {
+					return (-1 + Math.random() * 2) * (range ? range : 1);
+				});
+
+				const eventWithPanning = {
 					...event,
-					notes: notes,
+					panning: panning,
 				};
-				globalEmitter.emit(output, eventWithNotes);
+				globalEmitter.emit(output, eventWithPanning);
 			} else {
 				globalEmitter.emit(output, event);
 			}
@@ -38,9 +37,9 @@ const ChordCreatorComponent: React.FC<ChordCreatorDef> = ({
 		return () => {
 			globalEmitter.off(input, triggerEventHandler);
 		};
-	}, [chords, otherProps]);
+	}, [range, otherProps]);
 
-	return <div className="module-area-wrapper">Chord creator</div>;
+	return <div className="module-area-wrapper">Panner</div>;
 };
 
-export default ChordCreatorComponent;
+export default PannerComponent;

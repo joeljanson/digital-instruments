@@ -9,6 +9,7 @@ export interface TriggerEvent {
 	duration?: Time;
 	velocity?: number;
 	promise?: Promise<void>;
+	panning?: Array<number>;
 	settings?: {
 		pan?: number;
 		attack?: number;

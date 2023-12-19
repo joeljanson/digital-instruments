@@ -1,4 +1,4 @@
-{
+/* {
 	"session": {
 		"sequencerChainData": [
 			[
@@ -20,14 +20,35 @@
 						{ "note": 10, "voicing": [0, 2, 4, 7, 11] }
 					]
 				},
-				{"name":"stepsequencer"},
-				{"name":"panner", "range":0.1},
+				{"name":"strummer", "range":0.5, "direction":"up"},
+				{ 
+					"name": "drummersequencer", 
+					"length":"1m", 
+					"patterns": [{ "note": "12","pattern":[
+						{ "time": "0", "notes": [0] },
+						{ "time": "0:0:2", "notes": [6] },
+						{ "time": "0:1", "notes": [0,2] },
+						{ "time": "0:1:2", "notes": [6] },
+						{ "time": "0:2", "notes": [0] },
+						{ "time": "0:2:2", "notes": [6] },
+						{ "time": "0:3", "notes": [0,2] },
+						{"time":"0:3:2", "notes":[6]},
+						{"time":"0:3:3", "notes":[6]}
+					]
+					},{
+						"note": "13",
+						"pattern": [
+							{ "time": "0", "notes": [0] },
+							{ "time": "0:3:2", "notes": [0] }
+						]
+					}]
+				},
 				{ "name": "output", "output": "SEQUENCER_EVENT" }
 			]
 		],
 		"instrumentChainData": [
-			{ "name": "divisions", "loopDuration": 0 , "usesBuffer":true},
-			{ "name": "grandame", "loopDuration": 0 , "usesBuffer":true}
+			{ "name": "drummer"},
+			{ "name": "divisions", "loopDuration": 0 , "usesBuffer":false}
 		],
 		"effectChainData": [
 			{
@@ -36,8 +57,8 @@
 				"delayTime": 0.5,
 				"bypassed": true
 			},
-			{ "name": "convolver", "displayName": "Conputer", "bypassed": true },
-			{ "name": "distortion", "displayName": "Distortion", "bypassed": true }
+			{ "name": "convolver", "displayName": "Conputer", "bypassed": true }
 		]
 	}
 }
+ */

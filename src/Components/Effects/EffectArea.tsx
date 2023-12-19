@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./EffectArea.scss";
+import "../CSS/EffectArea.scss";
 import {
 	EffectChain,
 	EffectComponentDef,

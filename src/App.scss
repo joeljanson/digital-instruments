@@ -6,11 +6,7 @@
 }
 
 @import "./colors"; // Define your variables
-
-$padding: 5px;
-$margin: $padding / 2; // Here, the margin is half the padding value
-$borderRadius: 20px;
-$topBarHeight: 40px;
+@import "./margins"; // Define your variables
 
 body,
 html {
@@ -106,9 +102,9 @@ h1 {
 		border: 1px solid $border_color;
 		border-radius: $borderRadius;
 		/* Apply margin to all elements except the first one */
-		&:not(:first-child) {
+		/* &:not(:first-child) {
 			margin-top: $margin * 4;
-		}
+		} */
 		overflow: hidden;
 	}
 }
@@ -122,4 +118,23 @@ h1 {
 * {
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none; /* Firefox */
+}
+
+.dropzone-overlay {
+	backdrop-filter: blur(10px);
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 40px;
+	color: $black;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(255, 255, 255, 0.5); // Semi-transparent black
+	border-radius: $borderRadius;
+	z-index: 1000; // Ensure it's on top of other elements
+	opacity: 0; // Start fully transparent
+	transition: opacity 0.5s ease; // Transition for the opacity
 }

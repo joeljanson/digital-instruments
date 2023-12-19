@@ -1,6 +1,7 @@
 import React from "react";
 import { EffectProps, useChannels } from "./BaseEffect";
-import "../EffectArea.scss";
+import "../../CSS/EffectArea.scss";
+import "../../CSS/Areas.scss";
 
 export function withBaseEffectInterface<T extends EffectProps>(
 	WrappedComponent: React.FC<T>
@@ -9,7 +10,7 @@ export function withBaseEffectInterface<T extends EffectProps>(
 		const { input, output, bypass, toggleBypass } = useChannels(props);
 
 		return (
-			<div className={`base-effect ${bypass ? "bypassed" : ""}`}>
+			<div className={`base-area ${bypass ? "bypassed" : ""}`}>
 				<div className="controls">
 					<div className="effect-name">{props.name}</div>
 					<button
@@ -19,7 +20,7 @@ export function withBaseEffectInterface<T extends EffectProps>(
 						{""}
 					</button>
 				</div>
-				<div className="effect-area">
+				<div className="content-area">
 					<WrappedComponent {...props} input={input} output={output} />
 				</div>
 			</div>

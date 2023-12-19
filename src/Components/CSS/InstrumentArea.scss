@@ -4,8 +4,18 @@
 	flex-direction: row;
 	flex: 1;
 }
+.instrument {
+	position: relative;
+}
 
-.instrument-main-area {
+.instrument-wrapper {
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.instrument-content-area {
 	min-height: 0;
 	display: flex;
 	flex-direction: column;

@@ -1,6 +1,7 @@
 import ChorusEffect from "./ChorusEffect";
 import ConvolverEffect from "./ConvolverEffect";
 import DelayEffect from "./DelayEffect";
+import DistortionEffect from "./DistortionEffect";
 
 interface BaseEffectDef {
 	name: string;
@@ -24,10 +25,16 @@ export interface ChorusDef extends BaseEffectDef {
 	// Other input-specific properties
 }
 
+export interface DistortionDef extends BaseEffectDef {
+	//spread: number;
+	// Other input-specific properties
+}
+
 export type EffectComponentDef =
 	| BaseEffectDef
 	| DelayDef
 	| ConvolverDef
+	| DistortionDef
 	| ChorusDef; // | Divisions.. Add other component types as needed;
 
 /* Component mappings */
@@ -39,6 +46,7 @@ export const effectComponentMap: EffectComponentMap = {
 	delay: DelayEffect,
 	chorus: ChorusEffect,
 	convolver: ConvolverEffect,
+	distortion: DistortionEffect,
 	// other component mappings
 };
 

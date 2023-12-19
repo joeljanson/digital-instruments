@@ -9,13 +9,16 @@ import {
 } from "tone";
 import { globalEmitter } from "../../../App";
 import { TriggerEvent } from "../../Sequencers/Helpers/Events";
-import BufferSources from "../../Common/BufferSources";
-import "../InstrumentArea.scss";
+import "../../CSS/InstrumentArea.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";
 import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInterface";
 import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";
 
-const GranDame: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
+const GranDame: React.FC<BaseInstrumentProps> = ({
+	outputChannel,
+	buffer,
+	bufferUpdates,
+}) => {
 	const [position, setPosition] = useState<number>(0.3);
 	const positionRef = useRef(position);
 
@@ -27,29 +30,6 @@ const GranDame: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
 
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const players = useRef<Array<{ player: DroneGrainPlayer; note: number }>>([]);
-
-	const bufferSourceUpdated = (bufferUrl: string | ToneAudioBuffer) => {
-		console.log("Received file URL in parent component:", bufferUrl);
-		bufferRef.current?.dispose();
-		const loadedBuffer = new ToneAudioBuffer({
-			url: bufferUrl,
-			onload: () => {
-				console.log("buffer is loaded", loadedBuffer);
-				bufferRef.current = loadedBuffer;
-			},
-		});
-	};
-
-	const preloadAudio = () => {
-		const fileUrl = process.env.PUBLIC_URL + "/audio/4.wav";
-		const loadedBuffer = new ToneAudioBuffer({
-			url: fileUrl,
-			onload: () => {
-				console.log("buffer is loaded", loadedBuffer);
-				bufferRef.current = loadedBuffer;
-			},
-		});
-	};
 
 	// Update the ref whenever the position changes
 	useEffect(() => {
@@ -63,6 +43,14 @@ const GranDame: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
 	useEffect(() => {
 		detunSemiRef.current = detuneSemi;
 	}, [detuneSemi]);
+
+	useEffect(() => {
+		console.log("Buffer updated:", buffer);
+		if (buffer) {
+			bufferRef.current?.dispose();
+			bufferRef.current = buffer;
+		}
+	}, [buffer]);
 
 	useEffect(() => {
 		console.log("Use effect is run in division");
@@ -80,11 +68,12 @@ const GranDame: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
 						const spread = 0.05;
 						const notes = event.notes ? event.notes : [event.note];
 						const startTimes = event.startTimes ? event.startTimes : [0];
+						console.log("Starttimes = ", startTimes);
 
 						console.log("notes to play: ", notes);
 						notes.forEach(async (note: number, index) => {
 							console.log("note to play: ", note);
-							const startTime = now() + startTimes[index];
+							const startTime = now() + startTimes[index % startTimes.length];
 							const envelope = new AmplitudeEnvelope({
 								attack: 0.1,
 								decay: 0.2,
@@ -155,7 +144,6 @@ const GranDame: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
 					}
 				}
 			});
-			preloadAudio();
 			outputChannel?.send("effectsRackIn");
 			const volume = new Volume(20);
 			console.log("outputChannel inside of the gran dame: ", outputChannel);
@@ -213,12 +201,13 @@ const GranDame: React.FC<BaseInstrumentProps> = ({ outputChannel }) => {
 	const divStyle = {
 		backgroundImage: `url(${"https://i.pinimg.com/564x/76/34/c5/7634c5c39b81748de0229da9a218db09.jpg"})`,
 		height: "100%", // Adjust the height as needed
+		width: "100%",
 		backgroundSize: "cover", // This ensures the image covers the whole div
 		backgroundRepeat: "no-repeat", // This prevents the image from repeating
 	};
 
 	return (
-		<div style={divStyle}>
+		<div style={divStyle} className="submodule-area-wrapper">
 			Gran dame!
 			<div>
 				<input

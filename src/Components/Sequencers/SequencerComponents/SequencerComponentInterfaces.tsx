@@ -3,7 +3,9 @@ import DrummerSequencerComponent from "./Components/DrummerSequencerComponent";
 import EuclideanSequencerComponent from "./Components/EuclideanSequencerComponent";
 import InputComponent from "./Components/InputComponent";
 import OutputComponent from "./Components/OutputComponent";
+import PannerComponent from "./Components/PannerComponent";
 import StepSequencerComponent from "./Components/StepSequencerComponent";
+import StrummerComponent from "./Components/StrummerComponent";
 
 interface BaseComponentDef {
 	name: string;
@@ -25,6 +27,18 @@ export interface ChordCreatorDef extends BaseComponentDef {
 	chords: { note: number; voicing: number[] }[];
 	// Other chord-creator-specific properties
 }
+
+export interface StrummerDef extends BaseComponentDef {
+	range: number;
+	direction?: "up" | "down" | "random";
+	// Set a range from 0 to N amount of time in which the strummer will trigger
+}
+
+export interface PannerDef extends BaseComponentDef {
+	range?: number;
+	// Set a range from 0 to N amount of time in which the strummer will trigger
+}
+
 export interface StepSequencerDef extends BaseComponentDef {
 	steps: number;
 	// Other chord-creator-specific properties
@@ -42,6 +56,8 @@ export interface DrummerSequencerDef extends BaseComponentDef {
 export type ComponentDef =
 	| InputComponentDef
 	| ChordCreatorDef
+	| StrummerDef
+	| PannerDef
 	| StepSequencerDef
 	| EuclideanSequencerDef
 	| DrummerSequencerDef
@@ -49,6 +65,8 @@ export type ComponentDef =
 
 type MiddleComponentDef =
 	| ChordCreatorDef
+	| StrummerDef
+	| PannerDef
 	| StepSequencerDef
 	| EuclideanSequencerDef
 	| DrummerSequencerDef; // Add other component types as needed, Has to be added above as well
@@ -61,6 +79,8 @@ type ComponentMap = {
 export const componentMap: ComponentMap = {
 	input: InputComponent,
 	chordcreator: ChordCreatorComponent,
+	strummer: StrummerComponent,
+	panner: PannerComponent,
 	stepsequencer: StepSequencerComponent,
 	euclideansequencer: EuclideanSequencerComponent,
 	drummersequencer: DrummerSequencerComponent,

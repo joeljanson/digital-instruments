@@ -1,28 +1,35 @@
-import React, { useState, useEffect } from "react";
-import "./AudioVideoDropzone.scss";
+import React, { useState, useEffect, useRef } from "react";
+import "../CSS/AudioVideoDropzone.scss";
+import { DropzoneOverlay } from "./DropzoneOverlay";
 
 // Define the props interface
 interface AudioVideoDropzoneProps {
 	onFileDrop: (fileUrl: string) => void;
+	parentRef: React.RefObject<HTMLDivElement>;
 }
 
 const AudioVideoDropzone: React.FC<AudioVideoDropzoneProps> = ({
 	onFileDrop,
+	parentRef,
 }) => {
 	const [highlighted, setHighlighted] = useState(false);
 
-	// Attach event listeners to the window
 	useEffect(() => {
-		window.addEventListener("dragover", handleDragOver);
-		window.addEventListener("dragleave", handleDragLeave);
-		window.addEventListener("drop", handleDrop);
+		const parent = parentRef.current; // Get the current element of the ref
 
-		// Cleanup
-		return () => {
-			window.removeEventListener("dragover", handleDragOver);
-			window.removeEventListener("dragleave", handleDragLeave);
-			window.removeEventListener("drop", handleDrop);
-		};
+		if (parent) {
+			// Attach event listeners to the parent component
+			parent.addEventListener("dragover", handleDragOver);
+			parent.addEventListener("dragleave", handleDragLeave);
+			parent.addEventListener("drop", handleDrop);
+
+			// Cleanup
+			return () => {
+				parent.removeEventListener("dragover", handleDragOver);
+				parent.removeEventListener("dragleave", handleDragLeave);
+				parent.removeEventListener("drop", handleDrop);
+			};
+		}
 	}, []);
 
 	const handleDragOver = (e: DragEvent) => {
@@ -66,7 +73,8 @@ const AudioVideoDropzone: React.FC<AudioVideoDropzoneProps> = ({
 	};
 
 	return (
-		<div className={`dropzone ${highlighted ? "highlighted" : ""}`}>
+		<div ref={parentRef} className={`dropzone`}>
+			<DropzoneOverlay isVisible={highlighted} />
 			<p>Drag and drop audio/video files here</p>
 		</div>
 	);

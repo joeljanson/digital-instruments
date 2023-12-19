@@ -8,7 +8,6 @@ import { buffer } from "stream/consumers";
 
 const TestInstrument: React.FC<BaseInstrumentProps> = ({
 	buffer,
-	reversedBuffer,
 	outputChannel,
 	bufferLoaded,
 }) => {
@@ -49,7 +48,7 @@ const TestInstrument: React.FC<BaseInstrumentProps> = ({
 
 		const startTime = event.startTime ?? now();
 
-		if (buffer && reversedBuffer) {
+		if (buffer) {
 			const internalBuffer = buffer!;
 
 			player.buffer = internalBuffer;
