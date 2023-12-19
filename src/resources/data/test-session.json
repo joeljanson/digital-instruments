@@ -26,8 +26,7 @@
 			]
 		],
 		"instrumentChainData": [
-			{ "name": "divisions", "loopDuration": 0 , "usesBuffer":true},
-			{ "name": "grandame", "loopDuration": 0 , "usesBuffer":true}
+			{ "name": "testinstrument", "loopDuration": 0, "usesBuffer": true }
 		],
 		"effectChainData": [
 			{
