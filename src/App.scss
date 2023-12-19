@@ -121,6 +121,7 @@ h1 {
 }
 
 .dropzone-overlay {
+	pointer-events: none;
 	backdrop-filter: blur(10px);
 	position: absolute;
 	display: flex;

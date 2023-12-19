@@ -35,8 +35,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		transition: filter 0.3s ease; /* Added ease transition */
 		::before {
+			opacity: 0;
 			overflow: hidden;
 			content: "";
 			position: absolute;
@@ -45,37 +45,35 @@
 			right: 0;
 			border-radius: 10px;
 			bottom: 0;
+			backdrop-filter: blur(5px);
 			background: rgba(
-				0,
-				0,
-				0,
-				0
+				1,
+				1,
+				1,
+				0.1
 			); /* Black tint with 50% opacity - adjust as needed */
 			pointer-events: none; /* Prevents the overlay from blocking interactions */
-			transition: background 0.3s ease; /* Adjust as needed */
+			//transition: background 0.3s ease; /* Adjust as needed */
+			opacity: 0; // Start fully transparent
+			transition: opacity 0.5s ease; // Transition for the opacity
 		}
 	}
 	&.bypassed {
-		transition: background-color 0.3s ease;
+		transition: background-color 0.3s ease-in-out;
 
 		.bypass-button {
 			background-color: $main_bg_color;
 			border: 1px solid $border_color;
-			transition: background-color 0.3s ease;
+			transition: background-color 0.3s ease-in-out;
 		}
 		.content-area {
 			overflow: hidden;
-			filter: blur(
+			/* filter: blur(
 				10px
 			); /* Adjust the pixel value to control the amount of blur */
-			transition: filter 0.3s ease; /* Added ease transition */
 			::before {
-				background: rgba(
-					1,
-					1,
-					1,
-					0.2
-				); /* Black tint with 50% opacity - adjust as needed */
+				opacity: 1;
+				transition: opacity 0.3s ease; /* Added ease transition */
 			}
 		}
 	}
