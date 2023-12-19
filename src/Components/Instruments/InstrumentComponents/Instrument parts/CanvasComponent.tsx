@@ -67,12 +67,17 @@ const CanvasComponent: React.FC<CanvasComponentProps> = ({
 
 		const valuesArray = []; // Array to store the normalized values
 
+		// Calculate center offset for the grid
+		const totalGridWidth = spacing * elementsPerRow;
+		const xOffset = (ctx.canvas.width - totalGridWidth) / 2;
+		const yOffset = (ctx.canvas.height - totalGridWidth) / 2;
+
 		for (let i = 0; i < 25; i++) {
 			const row = Math.floor(i / elementsPerRow);
 			const col = i % elementsPerRow;
 
-			const xPosition = col * spacing + spacing / 2; // Center in each grid cell
-			const yPosition = row * spacing + spacing / 2;
+			const xPosition = col * spacing + spacing / 2 + xOffset; // Adjusted for centering
+			const yPosition = row * spacing + spacing / 2 + yOffset; // Adjusted for centering
 
 			// Calculate rotation angle
 			const angle = Math.atan2(

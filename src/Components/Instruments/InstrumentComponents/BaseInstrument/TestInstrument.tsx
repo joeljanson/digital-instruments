@@ -29,6 +29,7 @@ const TestInstrument: React.FC<BaseInstrumentProps> = ({
 
 	return (
 		<div className="test-wrapper">
+			hejsan
 			<div className="test-holder">
 				<CanvasComponent onValuesChange={handleRectangleValuesChange} />
 			</div>
