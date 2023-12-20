@@ -116,6 +116,7 @@ const GranDame: React.FC<BaseInstrumentProps> = ({
 										const internalPlayer = players.current[playerIndex].player;
 										internalPlayer.stop();
 										internalPlayer.dispose();
+										envelope.dispose();
 										players.current.splice(playerIndex, 1);
 									} else {
 										console.error("Player not found");
@@ -134,6 +135,7 @@ const GranDame: React.FC<BaseInstrumentProps> = ({
 										const internalPlayer = players.current[playerIndex].player;
 										internalPlayer.stop();
 										internalPlayer.dispose();
+										envelope.dispose();
 										players.current.splice(playerIndex, 1);
 									} else {
 										console.error("Player not found");

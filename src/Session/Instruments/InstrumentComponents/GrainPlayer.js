@@ -44,6 +44,7 @@ export class DroneGrainPlayer extends GrainPlayer {
 		source.onended = () => {
 			const index = this._activeSources.indexOf(source);
 			if (index !== -1) {
+				source.dispose();
 				this._activeSources.splice(index, 1);
 			}
 		};
