@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Transport } from "tone";
-import SessionContext from "./Session/SessionContext";
+import SessionContext from "./Session/Session/SessionContext";
 import ObliqueStrategy from "./resources/data/ObliqueStrategies";
 
 interface NavigationProps {

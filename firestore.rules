@@ -1,0 +1,11 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow read access to files in the 'public' directory
+    match /public/{allPaths=**} {
+      allow read;
+    }
+
+    // ... other rules ...
+  }
+}

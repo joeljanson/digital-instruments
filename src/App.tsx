@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
 import "./App.scss";
-import { Emitter, context, start } from "tone";
-import SessionContextProvider from "./Session/SessionContextProvider";
-import SequencerArea from "./Components/Sequencers/SequenceArea";
-import EffectArea from "./Components/Effects/EffectArea";
-import DelayEffect from "./Components/Effects/EffectComponents/DelayEffect";
-import ConvolverEffect from "./Components/Effects/EffectComponents/ConvolverEffect";
-import TapeMachine from "./Components/Audio-routing/Tape/TapeMachine";
-import { SequencerChains } from "./Components/Sequencers/SequencerComponents/SequencerComponentInterfaces";
-import { InstrumentChain } from "./Components/Instruments/InstrumentComponents/InstrumentComponentInterfaces";
-import InstrumentArea from "./Components/Instruments/InstrumentArea";
-import Navigation from "./Navigation";
-import { EffectChain } from "./Components/Effects/EffectComponents/EffectComponentInterfaces";
+import { start } from "tone";
 
-/* TEST CHAIN */
-import testJson from "./resources/data/test-session.json";
-import { SessionData } from "./Session/SessionInterface";
-const parsedData: SessionData = testJson as SessionData;
+import Session from "./Session/Session/Session";
+import "./Database Connections/firebaseConfig";
 
-export const globalEmitter = new Emitter();
+import HomePage from "./Home/Hompage";
+import {
+	addInstruments,
+	addNewSessionToFirestore,
+	updateSessionInFirestore,
+} from "./resources/data/WriteToSession";
 
 function App() {
 	const [toneStarted, setToneStarted] = useState(false);
@@ -28,42 +22,23 @@ function App() {
 		setToneStarted(true);
 	};
 
-	useEffect(() => {
-		const state = context.state;
-		console.log(`Audio context state: ${state}`);
-
-		if (state === "suspended") {
-			// Context is created but not yet playing
-			setToneStarted(false);
-		} else if (state === "running") {
-			// Context is active and playing
-			setToneStarted(true);
-		} else if (state === "closed") {
-			// Context has been closed
-			setToneStarted(false);
-		}
-	}, []);
+	const handleUpdateClick = () => {
+		//updateSessionInFirestore();
+		//addNewSessionToFirestore();
+		addInstruments();
+	};
 
 	return (
-		<SessionContextProvider>
-			<div className="App" onClick={startTone}>
-				<div className="top-bar-area">
-					<Navigation toneStarted={toneStarted} />
-				</div>
-				<header className="main-area">
-					<SequencerArea chains={parsedData.session.sequencerChainData} />
-					<InstrumentArea chains={parsedData.session.instrumentChainData} />
+		<div>
+			{/* <button onClick={handleUpdateClick}>Update Session</button> */}
 
-					<div className="module-area-wrapper">
-						<EffectArea chains={parsedData.session.effectChainData} />
-						<TapeMachine
-							receive="effectsRackOut"
-							send="tapeMachineOut"
-						></TapeMachine>
-					</div>
-				</header>
-			</div>
-		</SessionContextProvider>
+			<Router>
+				<Routes>
+					<Route path="/session/:sessionId" element={<Session />} />
+					<Route path="/" element={<HomePage />} />
+				</Routes>
+			</Router>
+		</div>
 	);
 }
 

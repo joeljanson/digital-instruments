@@ -5,8 +5,8 @@
 	font-style: normal;
 }
 
-@import "./colors"; // Define your variables
-@import "./margins"; // Define your variables
+@import "./Session/CSS/colors"; // Define your variables
+@import "./Session/CSS/margins"; // Define your variables
 
 body,
 html {
@@ -33,109 +33,4 @@ h1 {
 	max-height: 100vh; /* Keeps the minimum height */
 	align-items: stretch;
 	flex-direction: column;
-	.top-bar-area {
-		display: flex;
-		background-color: $main_bg_color;
-		color: $text_color;
-	}
-}
-
-.top-bar {
-	display: flex;
-	flex: 1;
-	flex-direction: row;
-	justify-content: space-between;
-	margin: 0px 15px;
-	> * {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex: 0.9;
-	}
-	.left-content {
-		justify-content: left;
-	}
-	.right-content {
-		justify-content: right;
-	}
-	.middle-content {
-		display: flex;
-		flex: 1;
-	}
-}
-
-.main-area {
-	display: flex;
-	min-height: 0;
-	flex: 1;
-	flex-direction: row;
-	align-items: stretch;
-	justify-content: center;
-	color: $text_color;
-	margin: 10px 10px;
-}
-
-.module-area-wrapper {
-	display: flex;
-	min-height: 0;
-	box-sizing: border-box;
-	flex: 1;
-	flex-grow: 1;
-	//height: 100%;
-	flex-direction: column;
-	justify-content: start;
-	align-items: stretch;
-	padding: $padding;
-	margin: 0px $margin;
-	border: 1px solid $border_color;
-	border-radius: $borderRadius;
-	&.instrument-area {
-		flex-grow: 3;
-	}
-	.submodule-area-wrapper {
-		min-height: 0;
-		display: flex;
-		flex: 1;
-		flex-direction: column;
-		/* height: 100%; */
-		padding: $padding * 2;
-		border: 1px solid $border_color;
-		border-radius: $borderRadius;
-		/* Apply margin to all elements except the first one */
-		/* &:not(:first-child) {
-			margin-top: $margin * 4;
-		} */
-		overflow: hidden;
-	}
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-::-webkit-scrollbar {
-	display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-* {
-	-ms-overflow-style: none; /* IE and Edge */
-	scrollbar-width: none; /* Firefox */
-}
-
-.dropzone-overlay {
-	pointer-events: none;
-	backdrop-filter: blur(10px);
-	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 40px;
-	color: $black;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(255, 255, 255, 0.5); // Semi-transparent black
-	border-radius: $borderRadius;
-	z-index: 1000; // Ensure it's on top of other elements
-	opacity: 0; // Start fully transparent
-	transition: opacity 0.5s ease; // Transition for the opacity
 }
