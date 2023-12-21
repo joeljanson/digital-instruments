@@ -26,6 +26,7 @@ function InstrumentArea({ chains }: InstrumentModuleProps) {
 	) {
 		const Component = instrumentComponentMap[componentDef.name];
 
+		console.log("Component def is: ", componentDef);
 		if (Component) {
 			return (
 				<Component
@@ -43,7 +44,7 @@ function InstrumentArea({ chains }: InstrumentModuleProps) {
 	return (
 		<div className="module-area-wrapper instrument-area">
 			Instrument area
-			<div className="instruments-wrapper">
+			<div className="instrument-wrapper">
 				{chains.map((componentDef, componentIndex) =>
 					renderComponent(
 						componentDef,

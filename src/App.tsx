@@ -35,7 +35,7 @@ function App() {
 			<Router>
 				<Routes>
 					<Route path="/session/:sessionId" element={<Session />} />
-					<Route path="/" element={<HomePage />} />
+					<Route path="/moment" element={<HomePage />} />
 				</Routes>
 			</Router>
 		</div>

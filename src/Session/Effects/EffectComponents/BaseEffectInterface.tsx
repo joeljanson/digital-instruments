@@ -20,7 +20,7 @@ export function withBaseEffectInterface<T extends EffectProps>(
 						{""}
 					</button>
 				</div>
-				<div className="content-area">
+				<div className="content-area effect-content-area">
 					<WrappedComponent {...props} input={input} output={output} />
 				</div>
 			</div>

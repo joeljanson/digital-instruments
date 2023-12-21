@@ -1,18 +1,18 @@
-.instruments-wrapper {
-	min-height: 0;
-	display: flex;
-	flex-direction: row;
-	flex: 1;
-}
-.instrument {
-	position: relative;
-}
-
-.instrument-wrapper {
+.instrument-area {
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
 	flex: 1;
+	.instrument-wrapper {
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+	}
+}
+
+.instrument {
+	position: relative;
 }
 
 .instrument-content-area {

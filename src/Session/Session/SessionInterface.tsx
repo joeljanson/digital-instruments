@@ -12,14 +12,11 @@ export interface SessionInfo {
 	name: string;
 	id: string;
 	category: string;
+	imageUrl: string;
 	// add other properties as needed
 }
 
 export interface SessionData {
-	sessionInfo: {
-		name: string;
-		id: string;
-		category: string;
-	};
+	sessionInfo: SessionInfo;
 	sessionData: Session;
 }

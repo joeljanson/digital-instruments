@@ -8,8 +8,9 @@ import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInt
 import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";
 
 const Divisions: React.FC<BaseInstrumentProps> = ({
-	outputChannel,
 	buffer,
+	outputChannel,
+	imageUrl,
 }) => {
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const reversedBufferRef = useRef<ToneAudioBuffer | null>(null);
@@ -60,6 +61,7 @@ const Divisions: React.FC<BaseInstrumentProps> = ({
 
 	useEffect(() => {
 		console.log("Buffer updated:", buffer);
+		console.log("Image url is:", imageUrl);
 		if (buffer) {
 			bufferRef.current?.dispose();
 			bufferRef.current = buffer;
@@ -181,7 +183,7 @@ const Divisions: React.FC<BaseInstrumentProps> = ({
 	}, [outputChannel]);
 
 	const divStyle = {
-		backgroundImage: `url(${"https://i.pinimg.com/474x/9b/4b/e6/9b4be63c10733f63a23b78f732906bd5.jpg"})`,
+		backgroundImage: `url(${imageUrl})`,
 		height: "100%", // Adjust the height as needed
 		width: "100%",
 		backgroundSize: "cover", // This ensures the image covers the whole div

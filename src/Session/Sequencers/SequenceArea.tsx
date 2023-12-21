@@ -41,9 +41,9 @@ function SequencerArea({ chains }: SequencerModuleProps) {
 	}
 
 	return (
-		<div className="module-area-wrapper">
+		<div className="module-area-wrapper sequencer-area">
 			Sequencer area
-			<div className="sequencer-area">
+			<div className="sequencer-wrapper">
 				{Object.entries(chains).map(([chainKey, chainValue], chainIndex) => (
 					<div key={chainKey}>
 						{chainValue.map((componentDef, componentIndex) =>

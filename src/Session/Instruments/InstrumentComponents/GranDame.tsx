@@ -13,11 +13,12 @@ import "../../CSS/InstrumentArea.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";
 import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInterface";
 import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";
+import { GranDameDef } from "./InstrumentComponentInterfaces";
 
 const GranDame: React.FC<BaseInstrumentProps> = ({
-	outputChannel,
 	buffer,
-	bufferUpdates,
+	outputChannel,
+	imageUrl,
 }) => {
 	const [position, setPosition] = useState<number>(0.3);
 	const positionRef = useRef(position);
@@ -205,7 +206,7 @@ const GranDame: React.FC<BaseInstrumentProps> = ({
 	};
 
 	const divStyle = {
-		backgroundImage: `url(${"https://i.pinimg.com/564x/76/34/c5/7634c5c39b81748de0229da9a218db09.jpg"})`,
+		backgroundImage: `url(${imageUrl})`,
 		height: "100%", // Adjust the height as needed
 		width: "100%",
 		backgroundSize: "cover", // This ensures the image covers the whole div

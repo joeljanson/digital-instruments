@@ -41,6 +41,9 @@ export async function fetchAllSessionInfos(): Promise<SessionInfo[]> {
 			name: doc.data().name,
 			category: doc.data().category,
 			id: doc.id, // Firestore document ID
+			imageUrl: doc.data().imageUrl
+				? doc.data().imageUrl
+				: "https://i.pinimg.com/564x/6f/c5/e4/6fc5e41e71b3307cbb37da48ad4d6491.jpg",
 		}));
 
 		return sessionInfos;

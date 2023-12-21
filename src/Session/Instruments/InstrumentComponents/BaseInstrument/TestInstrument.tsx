@@ -11,7 +11,6 @@ import CanvasComponent from "../Instrument parts/CanvasComponent";
 const TestInstrument: React.FC<BaseInstrumentProps> = ({
 	buffer,
 	outputChannel,
-	bufferLoaded,
 }) => {
 	const playerMap = useRef<Map<number, Player>>(new Map());
 

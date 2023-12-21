@@ -1,21 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { Channel, ToneAudioBuffer, ToneAudioBuffers } from "tone";
 import { fetchDownloadURL } from "../../../../Database Connections/getFiles";
+import { BaseInstrumentDef } from "../InstrumentComponentInterfaces";
 
-export interface BaseInstrumentProps {
-	name?: string;
+export interface BaseInstrumentProps extends BaseInstrumentDef {
 	buffer?: ToneAudioBuffer | null;
 	outputChannel?: Channel | null;
-	bufferLoaded?: boolean;
-	usesBuffer?: boolean;
-	bufferUpdates?: number;
 }
 
 // Custom hook for managing audio
-export function useBaseInstrument({
-	outputChannel,
-	usesBuffer,
-}: BaseInstrumentProps) {
+export function useBaseInstrument({ usesBuffer }: BaseInstrumentProps) {
 	const outputChannelRef = useRef<Channel | null>(null);
 	const bufferRef = useRef<ToneAudioBuffer | null>(null);
 	const [bypass, setBypass] = useState(false); // New state

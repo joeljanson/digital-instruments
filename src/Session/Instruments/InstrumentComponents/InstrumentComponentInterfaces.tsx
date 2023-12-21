@@ -3,10 +3,11 @@ import Divisions from "./Divisions";
 import Drummer from "./Drummer";
 import GranDame from "./GranDame";
 
-interface BaseInstrumentDef {
+export interface BaseInstrumentDef {
 	name: string;
 	index?: number;
 	usesBuffer?: boolean;
+	imageUrl?: string;
 	// ... common properties
 }
 
