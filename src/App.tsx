@@ -9,6 +9,8 @@ import "./Database Connections/firebaseConfig";
 
 import HomePage from "./Home/Hompage";
 import { addInstruments } from "./resources/data/WriteToSession";
+import MomentUserContextProvider from "./Contexts/MomentUserContextProvider";
+import { loginAnonymously } from "./Database Connections/users/loginAndSignup";
 
 function App() {
 	const [toneStarted, setToneStarted] = useState(false);
@@ -28,12 +30,14 @@ function App() {
 		<div>
 			{/* <button onClick={handleUpdateClick}>Update Session</button> */}
 
-			<Router>
-				<Routes>
-					<Route path="/session/:sessionId" element={<Session />} />
-					<Route path="/moment" element={<HomePage />} />
-				</Routes>
-			</Router>
+			<MomentUserContextProvider>
+				<Router>
+					<Routes>
+						<Route path="/session/:sessionId" element={<Session />} />
+						<Route path="/moment" element={<HomePage />} />
+					</Routes>
+				</Router>
+			</MomentUserContextProvider>
 		</div>
 	);
 }

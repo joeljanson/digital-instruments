@@ -1,21 +1,33 @@
 // HomePage.tsx
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchAllSessionInfos } from "../Database Connections/getSession";
 import { SessionInfo } from "../Session/Session/SessionInterface";
+import MomentUserContext from "../Contexts/MomentUserContext";
+import { loginAnonymously } from "../Database Connections/users/loginAndSignup";
 
 const HomePage = () => {
 	const [sessions, setSessions] = useState<SessionInfo[]>([]);
+	const { user, setUser, loading } = useContext(MomentUserContext);
 
 	useEffect(() => {
 		async function loadSessions() {
 			const sessionInfos = await fetchAllSessionInfos();
 			setSessions(sessionInfos);
 		}
-
 		loadSessions();
 	}, []);
+
+	useEffect(() => {
+		if (!loading && !user) {
+			console.log("User does not exist, logging in anonymously");
+			// If loading is done and no user is logged in, login anonymously
+			loginAnonymously();
+		} else if (user) {
+			console.log("User has loaded", user);
+		}
+	}, [user, loading]); // Add loading as a dependency
 
 	return (
 		<div>
@@ -33,7 +45,11 @@ const HomePage = () => {
 			) : (
 				"Loading..."
 			)}
-			{/* Additional content for the home page */}
+			{user ? (
+				<p>Welcome, {user.uid || user.email}</p>
+			) : (
+				<p>No user is signed in.</p>
+			)}
 		</div>
 	);
 };
