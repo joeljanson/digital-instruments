@@ -8,11 +8,7 @@ import Session from "./Session/Session/Session";
 import "./Database Connections/firebaseConfig";
 
 import HomePage from "./Home/Hompage";
-import {
-	addInstruments,
-	addNewSessionToFirestore,
-	updateSessionInFirestore,
-} from "./resources/data/WriteToSession";
+import { addInstruments } from "./resources/data/WriteToSession";
 
 function App() {
 	const [toneStarted, setToneStarted] = useState(false);

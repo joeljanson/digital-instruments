@@ -3,10 +3,11 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "./firebaseService";
 import { SessionData, SessionInfo } from "../Session/Session/SessionInterface";
+import { publicDefaultSessions, publicSessionInfos } from "./paths";
 
 export async function fetchSessionData(sessionId: string) {
 	// Get a document reference
-	const docRef = doc(db, "defaultSessions", sessionId);
+	const docRef = doc(db, publicDefaultSessions, sessionId);
 
 	try {
 		// Fetch the document
@@ -31,7 +32,7 @@ export async function fetchSessionData(sessionId: string) {
 export async function fetchAllSessionInfos(): Promise<SessionInfo[]> {
 	try {
 		// Reference to the 'defaultSessions' collection
-		const collectionRef = collection(db, "sessionInfos");
+		const collectionRef = collection(db, publicSessionInfos);
 
 		// Get all documents from the collection
 		const querySnapshot = await getDocs(collectionRef);

@@ -1,5 +1,8 @@
 .sequencer-area {
-	display: none;
+	display: flex;
+	&.display-none {
+		display: none;
+	}
 	.sequencer-wrapper {
 		display: flex;
 		flex-direction: row;

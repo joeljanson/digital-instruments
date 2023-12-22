@@ -188,6 +188,7 @@ const Divisions: React.FC<BaseInstrumentProps> = ({
 		width: "100%",
 		backgroundSize: "cover", // This ensures the image covers the whole div
 		backgroundRepeat: "no-repeat", // This prevents the image from repeating
+		backgroundPosition: "center",
 	};
 
 	return (

@@ -1,5 +1,17 @@
-import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import {
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	getDocs,
+	setDoc,
+	updateDoc,
+} from "firebase/firestore";
 import { db } from "../../Database Connections/firebaseService";
+import {
+	publicDefaultSessions,
+	publicSessionInfos,
+} from "../../Database Connections/paths";
 
 // Your session data
 const defaultInstrumentOne = {
@@ -8,7 +20,7 @@ const defaultInstrumentOne = {
 		id: "",
 		category: "sampler",
 		imageUrl:
-			"https://i.pinimg.com/564x/41/ac/d3/41acd30d3e4d4b892e4d87cc01df5061.jpg",
+			"https://i.pinimg.com/564x/64/ed/69/64ed69f86a7cd9e4c796d25e9582911a.jpg",
 	},
 	sessionData: {
 		sequencerChainData: {
@@ -27,7 +39,7 @@ const defaultInstrumentOne = {
 				loopDuration: 0,
 				usesBuffer: true,
 				imageUrl:
-					"https://i.pinimg.com/564x/41/ac/d3/41acd30d3e4d4b892e4d87cc01df5061.jpg",
+					"https://i.pinimg.com/564x/64/ed/69/64ed69f86a7cd9e4c796d25e9582911a.jpg",
 			},
 		],
 		effectChainData: [
@@ -85,7 +97,7 @@ const defaultInstrumentTwo = {
 				loopDuration: 0,
 				usesBuffer: true,
 				imageUrl:
-					"https://i.pinimg.com/564x/cd/6d/f6/cd6df6ca1ba496f67f7730a65421ffa0.jpg",
+					"https://i.pinimg.com/564x/60/8a/cf/608acff0dc0f7f004fe42b005d630d1b.jpg",
 			},
 		],
 		effectChainData: [
@@ -110,8 +122,6 @@ const defaultInstrumentThree = {
 		name: "Looking synth",
 		id: "",
 		category: "synth",
-		imageUrl:
-			"https://i.pinimg.com/564x/cd/6d/f6/cd6df6ca1ba496f67f7730a65421ffa0.jpg",
 	},
 	sessionData: {
 		sequencerChainData: {
@@ -142,8 +152,6 @@ const defaultInstrumentThree = {
 				name: "testinstrument",
 				loopDuration: 0,
 				usesBuffer: true,
-				imageUrl:
-					"https://i.pinimg.com/564x/cd/6d/f6/cd6df6ca1ba496f67f7730a65421ffa0.jpg",
 			},
 		],
 		effectChainData: [
@@ -163,7 +171,7 @@ export async function updateSessionInFirestore() {
 		// Reference to the existing document in 'defaultSessions' collection
 		const sessionRef = doc(
 			db,
-			"defaultSessions",
+			publicDefaultSessions,
 			defaultInstrumentOne.sessionInfo.id
 		);
 
@@ -177,14 +185,49 @@ export async function updateSessionInFirestore() {
 }
 
 export async function addInstruments() {
-	addNewSessionToFirestore([defaultInstrumentThree]);
+	try {
+		await deleteAllSessionData();
+		addNewSessionToFirestore([
+			defaultInstrumentOne,
+			defaultInstrumentTwo,
+			defaultInstrumentThree,
+		]);
+	} catch (error) {
+		console.log("Could not delete and therefore not create new instruments");
+	}
+}
+
+export async function deleteAllSessionData() {
+	try {
+		// Paths to the collections
+		const publicDefaultSessionsPath = "public/sessions/defaultSessions";
+		const publicSessionInfosPath = "public/sessions/sessionInfos";
+
+		// Delete documents in 'publicDefaultSessions'
+		const defaultSessionsRef = collection(db, publicDefaultSessionsPath);
+		const defaultSessionsSnapshot = await getDocs(defaultSessionsRef);
+		defaultSessionsSnapshot.forEach(async (doc) => {
+			await deleteDoc(doc.ref);
+		});
+
+		// Delete documents in 'publicSessionInfos'
+		const sessionInfosRef = collection(db, publicSessionInfosPath);
+		const sessionInfosSnapshot = await getDocs(sessionInfosRef);
+		sessionInfosSnapshot.forEach(async (doc) => {
+			await deleteDoc(doc.ref);
+		});
+
+		console.log("All session data deleted successfully");
+	} catch (error) {
+		console.error("Error in deleting session data: ", error);
+	}
 }
 
 export async function addNewSessionToFirestore(instruments: any[]) {
 	instruments.forEach(async (instrument) => {
 		try {
 			// Step 1: Add a new document to the 'defaultSessions' collection and get the ID
-			const defaultSessionsRef = collection(db, "defaultSessions");
+			const defaultSessionsRef = collection(db, publicDefaultSessions);
 			const docRef = await addDoc(defaultSessionsRef, instrument);
 			const newId = docRef.id; // The generated ID
 
@@ -196,7 +239,7 @@ export async function addNewSessionToFirestore(instruments: any[]) {
 			};
 
 			// Step 2: Add to the 'sessionInfos' collection
-			const sessionInfosRef = doc(db, "sessionInfos", newId);
+			const sessionInfosRef = doc(db, publicSessionInfos, newId);
 			await setDoc(sessionInfosRef, sessionInfo);
 
 			console.log(`Document successfully added with ID: ${newId}`);
