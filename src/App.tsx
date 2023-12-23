@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import "./App.scss";
@@ -11,9 +11,11 @@ import HomePage from "./Home/Hompage";
 import { addInstruments } from "./resources/data/WriteToSession";
 import MomentUserContextProvider from "./Contexts/MomentUserContextProvider";
 import { loginAnonymously } from "./Database Connections/users/loginAndSignup";
+import MomentUserContext from "./Contexts/MomentUserContext";
 
 function App() {
 	const [toneStarted, setToneStarted] = useState(false);
+
 	const startTone = async () => {
 		await start();
 		console.log("Tone started!");
@@ -28,7 +30,7 @@ function App() {
 
 	return (
 		<div>
-			{/* <button onClick={handleUpdateClick}>Update Session</button> */}
+			{/* {<button onClick={handleUpdateClick}>Update Session</button>} */}
 
 			<MomentUserContextProvider>
 				<Router>

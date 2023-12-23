@@ -65,7 +65,7 @@ const defaultInstrumentTwo = {
 		id: "",
 		category: "sampler",
 		imageUrl:
-			"https://i.pinimg.com/564x/cd/6d/f6/cd6df6ca1ba496f67f7730a65421ffa0.jpg",
+			"https://i.pinimg.com/564x/60/8a/cf/608acff0dc0f7f004fe42b005d630d1b.jpg",
 	},
 	sessionData: {
 		sequencerChainData: {
@@ -122,6 +122,7 @@ const defaultInstrumentThree = {
 		name: "Looking synth",
 		id: "",
 		category: "synth",
+		imageUrl: "",
 	},
 	sessionData: {
 		sequencerChainData: {
@@ -235,6 +236,7 @@ export async function addNewSessionToFirestore(instruments: any[]) {
 			const sessionInfo = {
 				name: instrument.sessionInfo.name,
 				category: instrument.sessionInfo.category,
+				imageUrl: instrument.sessionInfo.imageUrl,
 				// ... other sessionInfo fields
 			};
 

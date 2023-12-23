@@ -6,26 +6,44 @@ import {
 	linkWithCredential,
 	AuthCredential,
 	signInAnonymously,
-	onAuthStateChanged,
+	signInWithCredential,
+	linkWithPopup,
 } from "firebase/auth";
 import { auth } from "../firebaseService";
 
 export const loginWithGoogle = async () => {
 	const provider = new GoogleAuthProvider();
+	const currentUser = auth.currentUser;
 
 	try {
-		const currentUser = auth.currentUser;
-		const result = await signInWithPopup(auth, provider);
+		console.log("Currentuser: ", currentUser);
+		if (currentUser) {
+			const result = await linkWithPopup(currentUser, provider);
+			const newUser = result.user;
 
-		// Get credential from the Google auth provider
-		const credential = GoogleAuthProvider.credentialFromResult(result);
+			console.log("New user: ", newUser);
 
-		// Check if we got a valid credential and if the user is anonymous
-		if (credential && currentUser && currentUser.isAnonymous) {
-			await linkWithCredential(currentUser, credential as AuthCredential);
-			console.log("Anonymous account successfully linked with Google");
-		} else {
-			console.log("User signed in with Google");
+			// Get credential from the Google auth provider
+			const credential = GoogleAuthProvider.credentialFromResult(result);
+
+			// Check if we got a valid credential and if the user is anonymous
+			if (credential && currentUser && currentUser.isAnonymous) {
+				linkWithCredential(currentUser, credential)
+					.then((usercred) => {
+						const user = usercred.user;
+						console.log("Anonymous account successfully upgraded", user);
+					})
+					.catch((error) => {
+						console.log("Error upgrading anonymous account", error);
+						const errorCredential =
+							GoogleAuthProvider.credentialFromError(error);
+						if (errorCredential) {
+							signInWithCredential(auth, errorCredential);
+						}
+					});
+			} else {
+				console.log("User signed in with Google");
+			}
 		}
 	} catch (error) {
 		console.error("Error during Google sign-in", error);

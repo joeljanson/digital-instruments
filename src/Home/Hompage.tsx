@@ -5,11 +5,14 @@ import { Link } from "react-router-dom";
 import { fetchAllSessionInfos } from "../Database Connections/getSession";
 import { SessionInfo } from "../Session/Session/SessionInterface";
 import MomentUserContext from "../Contexts/MomentUserContext";
-import { loginAnonymously } from "../Database Connections/users/loginAndSignup";
+import {
+	loginAnonymously,
+	loginWithGoogle,
+} from "../Database Connections/users/loginAndSignup";
 
 const HomePage = () => {
 	const [sessions, setSessions] = useState<SessionInfo[]>([]);
-	const { user, setUser, loading } = useContext(MomentUserContext);
+	const { user, loading } = useContext(MomentUserContext);
 
 	useEffect(() => {
 		async function loadSessions() {
@@ -18,6 +21,12 @@ const HomePage = () => {
 		}
 		loadSessions();
 	}, []);
+
+	useEffect(() => {
+		if (user) {
+			console.log("User has loaded", user);
+		}
+	}, [user]); // Add loading as a dependency
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -29,15 +38,21 @@ const HomePage = () => {
 		}
 	}, [user, loading]); // Add loading as a dependency
 
+	const loginClick = async () => {
+		loginWithGoogle();
+	};
+
 	return (
 		<div>
-			<h2>Home Page</h2>
+			<h2>Home Page</h2>¨
+			<button onClick={loginClick}>Login with google!</button>
 			{sessions.length ? (
 				<nav>
 					<ul>
 						{sessions.map((session) => (
 							<li key={session.id}>
 								<Link to={`/session/${session.id}`}>{session.name}</Link>
+								<img src={session.imageUrl} alt="imag"></img>
 							</li>
 						))}
 					</ul>
@@ -45,11 +60,7 @@ const HomePage = () => {
 			) : (
 				"Loading..."
 			)}
-			{user ? (
-				<p>Welcome, {user.uid || user.email}</p>
-			) : (
-				<p>No user is signed in.</p>
-			)}
+			{user ? <p>Welcome, {user.displayName}</p> : <p>No user is signed in.</p>}
 		</div>
 	);
 };

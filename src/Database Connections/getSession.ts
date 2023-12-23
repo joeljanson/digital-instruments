@@ -37,6 +37,9 @@ export async function fetchAllSessionInfos(): Promise<SessionInfo[]> {
 		// Get all documents from the collection
 		const querySnapshot = await getDocs(collectionRef);
 
+		querySnapshot.docs.forEach((doc) => {
+			console.log(doc.data());
+		});
 		// Map the documents to extract only the sessionInfo
 		const sessionInfos = querySnapshot.docs.map((doc) => ({
 			name: doc.data().name,

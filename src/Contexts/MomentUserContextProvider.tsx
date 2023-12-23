@@ -15,6 +15,7 @@ const MomentUserContextProvider: React.FC<MomentUserContextProviderProps> = ({
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+			console.log("this never happens?", firebaseUser);
 			setUser(firebaseUser);
 			setLoading(false); // Set loading to false once the check is complete
 		});
