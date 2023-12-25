@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Player, ToneAudioBuffer, Volume, now } from "tone";
 import { globalEmitter } from "../../Session/Session";
 import { TriggerEvent } from "../../Sequencers/Helpers/Events";
-import "../../CSS/InstrumentArea.scss";
+import "../../../CSS/InstrumentArea.scss";
 import { EffectsPool } from "../Helpers/EffectsPool";
 import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInterface";
 import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";

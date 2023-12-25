@@ -5,14 +5,18 @@ import { Link } from "react-router-dom";
 import { fetchAllSessionInfos } from "../Database Connections/getSession";
 import { SessionInfo } from "../Session/Session/SessionInterface";
 import MomentUserContext from "../Contexts/MomentUserContext";
+import { User } from "firebase/auth";
 import {
 	loginAnonymously,
-	loginWithGoogle,
+	signInWithGoogle,
 } from "../Database Connections/users/loginAndSignup";
+
+import "../CSS/Homepage.scss";
 
 const HomePage = () => {
 	const [sessions, setSessions] = useState<SessionInfo[]>([]);
-	const { user, loading } = useContext(MomentUserContext);
+	const { user, setUser, loading } = useContext(MomentUserContext);
+	const [internalUser, setInternalUser] = useState<User | null>(null);
 
 	useEffect(() => {
 		async function loadSessions() {
@@ -25,8 +29,9 @@ const HomePage = () => {
 	useEffect(() => {
 		if (user) {
 			console.log("User has loaded", user);
+			setInternalUser(user);
 		}
-	}, [user]); // Add loading as a dependency
+	}, [user, internalUser]); // Add loading as a dependency
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -39,28 +44,42 @@ const HomePage = () => {
 	}, [user, loading]); // Add loading as a dependency
 
 	const loginClick = async () => {
-		loginWithGoogle();
+		const updatedUser = await signInWithGoogle();
+		console.log(updatedUser);
+		setInternalUser(updatedUser);
+		setUser(updatedUser);
 	};
+	if (loading) {
+		return <div></div>;
+	}
 
 	return (
 		<div>
 			<h2>Home Page</h2>¨
-			<button onClick={loginClick}>Login with google!</button>
+			{user ? "" : <button onClick={loginClick}>Login with google!</button>}
 			{sessions.length ? (
-				<nav>
-					<ul>
-						{sessions.map((session) => (
-							<li key={session.id}>
-								<Link to={`/session/${session.id}`}>{session.name}</Link>
-								<img src={session.imageUrl} alt="imag"></img>
-							</li>
-						))}
-					</ul>
-				</nav>
+				<div className="session-container">
+					{sessions.map((session) => (
+						<div className="session-item" key={session.id}>
+							<Link to={`/session/${session.id}`} className="session-link">
+								<img
+									src={session.imageUrl}
+									alt={session.name}
+									className="session-image"
+								/>
+								<span className="session-name">{session.name}</span>
+							</Link>
+						</div>
+					))}
+				</div>
 			) : (
 				"Loading..."
 			)}
-			{user ? <p>Welcome, {user.displayName}</p> : <p>No user is signed in.</p>}
+			{user ? (
+				<p>Welcome, {internalUser?.displayName}</p>
+			) : (
+				<p>No user is signed in.</p>
+			)}
 		</div>
 	);
 };

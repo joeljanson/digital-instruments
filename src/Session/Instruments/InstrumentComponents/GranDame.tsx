@@ -9,7 +9,7 @@ import {
 } from "tone";
 import { globalEmitter } from "../../Session/Session";
 import { TriggerEvent } from "../../Sequencers/Helpers/Events";
-import "../../CSS/InstrumentArea.scss";
+import "../../../CSS/InstrumentArea.scss";
 import { DroneGrainPlayer } from "./GrainPlayer";
 import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInterface";
 import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";

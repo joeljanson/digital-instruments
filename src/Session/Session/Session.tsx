@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import "../CSS/Session.scss";
+import "../../CSS/Session.scss";
 import { Emitter, context, start } from "tone";
 import SessionContextProvider from "./SessionContextProvider";
 import SequencerArea from "../Sequencers/SequenceArea";

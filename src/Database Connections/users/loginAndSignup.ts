@@ -1,54 +1,41 @@
 // AuthService.ts
 
 import {
-	signInWithPopup,
 	GoogleAuthProvider,
-	linkWithCredential,
-	AuthCredential,
 	signInAnonymously,
-	signInWithCredential,
 	linkWithPopup,
+	updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebaseService";
 
-export const loginWithGoogle = async () => {
-	const provider = new GoogleAuthProvider();
-	const currentUser = auth.currentUser;
+const googleProvider = new GoogleAuthProvider();
 
+export const signInWithGoogle = async () => {
 	try {
-		console.log("Currentuser: ", currentUser);
-		if (currentUser) {
-			const result = await linkWithPopup(currentUser, provider);
-			const newUser = result.user;
+		// Link the anonymous account with Google
+		const result = await linkWithPopup(auth.currentUser!, googleProvider);
+		console.log(result);
+		// Fetch the updated user information
+		const updatedUser = auth.currentUser;
+		console.log("Linked account:", updatedUser);
+		console.log(updatedUser?.providerData[0].displayName);
 
-			console.log("New user: ", newUser);
+		if (auth.currentUser) {
+			await updateProfile(auth.currentUser, {
+				displayName: updatedUser?.providerData[0].displayName,
+			});
 
-			// Get credential from the Google auth provider
-			const credential = GoogleAuthProvider.credentialFromResult(result);
-
-			// Check if we got a valid credential and if the user is anonymous
-			if (credential && currentUser && currentUser.isAnonymous) {
-				linkWithCredential(currentUser, credential)
-					.then((usercred) => {
-						const user = usercred.user;
-						console.log("Anonymous account successfully upgraded", user);
-					})
-					.catch((error) => {
-						console.log("Error upgrading anonymous account", error);
-						const errorCredential =
-							GoogleAuthProvider.credentialFromError(error);
-						if (errorCredential) {
-							signInWithCredential(auth, errorCredential);
-						}
-					});
-			} else {
-				console.log("User signed in with Google");
-			}
+			console.log("Updated user profile:", auth.currentUser.displayName);
+			return auth.currentUser;
 		}
+		return null;
 	} catch (error) {
-		console.error("Error during Google sign-in", error);
+		console.error("Error during account linking: ", error);
+		return null;
 	}
 };
+
+// Call signInWithGoogle() when the user clicks on Google Sign-In button
 
 // Function to handle anonymous user login
 export const loginAnonymously = async () => {

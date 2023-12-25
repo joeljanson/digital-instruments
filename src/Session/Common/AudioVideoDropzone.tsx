@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../CSS/AudioVideoDropzone.scss";
+import "../../CSS/AudioVideoDropzone.scss";
 import { DropzoneOverlay } from "./DropzoneOverlay";
 
 // Define the props interface

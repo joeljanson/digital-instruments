@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "../CSS/SequencerArea.scss";
+import "../../CSS/SequencerArea.scss";
 import {
 	ComponentDef,
 	SequencerChains,

@@ -10,7 +10,7 @@ import {
 import { globalEmitter } from "../../Session/Session";
 import { TriggerEvent } from "../../Sequencers/Helpers/Events";
 import BufferSources from "../../Common/BufferSources";
-import "../../CSS/InstrumentArea.scss";
+import "../../../CSS/InstrumentArea.scss";
 import { EffectsPool } from "../Helpers/EffectsPool";
 import { withBaseInstrumenttInterface } from "./BaseInstrument/BaseInstrumentInterface";
 import { BaseInstrumentProps } from "./BaseInstrument/BaseInstrument";

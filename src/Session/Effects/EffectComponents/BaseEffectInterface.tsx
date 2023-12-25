@@ -1,7 +1,7 @@
 import React from "react";
 import { EffectProps, useChannels } from "./BaseEffect";
-import "../../CSS/EffectArea.scss";
-import "../../CSS/Areas.scss";
+import "../../../CSS/EffectArea.scss";
+import "../../../CSS/Areas.scss";
 
 export function withBaseEffectInterface<T extends EffectProps>(
 	WrappedComponent: React.FC<T>

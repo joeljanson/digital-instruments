@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "../CSS/InstrumentArea.scss";
+import "../../CSS/InstrumentArea.scss";
 import {
 	InstrumentChain,
 	InstrumentComponentDef,

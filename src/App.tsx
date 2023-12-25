@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import "./App.scss";
+import "./CSS/App.scss";
 import { start } from "tone";
 
 import Session from "./Session/Session/Session";

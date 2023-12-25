@@ -2,8 +2,8 @@ import React, { useRef } from "react";
 import { BaseInstrumentProps, useBaseInstrument } from "./BaseInstrument";
 import BufferSources from "../../../Common/BufferSources";
 
-import "../../../CSS/Areas.scss";
-import "../../../CSS/InstrumentArea.scss";
+import "../../../../CSS/Areas.scss";
+import "../../../../CSS/InstrumentArea.scss";
 
 export function withBaseInstrumenttInterface<T extends BaseInstrumentProps>(
 	WrappedComponent: React.FC<T>

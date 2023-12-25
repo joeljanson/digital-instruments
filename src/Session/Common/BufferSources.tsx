@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "../CSS/AudioVideoDropzone.scss";
+import "../../CSS/AudioVideoDropzone.scss";
 import AudioVideoDropzone from "./AudioVideoDropzone";
 import RadioRecorder from "./RadioRecorder";
 import { ToneAudioBuffer } from "tone";
 import InputRecorder from "./InputRecorder";
-import "../CSS/BufferSources.scss";
+import "../../CSS/BufferSources.scss";
 
 // Define the props interface
 interface AudioVideoDropzoneProps {

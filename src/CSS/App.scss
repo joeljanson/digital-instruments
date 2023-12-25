@@ -1,12 +1,12 @@
 @font-face {
 	font-family: "PPPangaia-Medium";
-	src: url("./resources/fonts/PPPangaia-Ultralight.otf") format("opentype");
+	src: url("../resources/fonts/PPPangaia-Ultralight.otf") format("opentype");
 	font-weight: normal;
 	font-style: normal;
 }
 
-@import "./Session/CSS/colors"; // Define your variables
-@import "./Session/CSS/margins"; // Define your variables
+@import "./colors"; // Define your variables
+@import "./margins"; // Define your variables
 
 body,
 html {
@@ -14,6 +14,8 @@ html {
 	box-sizing: border-box;
 	height: 100%;
 	margin: 0;
+	background-color: $main_bg_color;
+	color: $white;
 }
 * {
 	box-sizing: border-box;
