@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { EffectProps } from "./BaseEffect";
 import { Reverb } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
-const ReverbEffect: React.FC<EffectProps> = ({
+const ReverbEffect: React.FC<BaseEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,

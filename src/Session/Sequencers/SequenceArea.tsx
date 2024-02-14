@@ -9,6 +9,7 @@ import {
 // Assuming you're passing this as a prop to your component
 interface SequencerModuleProps {
 	chains: SequencerChains;
+	//onDataChange: (newData: any) => void; // Callback function for data changes
 }
 
 function SequencerArea({ chains }: SequencerModuleProps) {
@@ -18,6 +19,14 @@ function SequencerArea({ chains }: SequencerModuleProps) {
 		// Cleanup function to remove the event listeners
 		return () => {};
 	}, []);
+
+	function handleComponentChange(index: number, newData: any) {
+		// Logic to update the specific component's data in 'chains'
+		// and then call onDataChange with the updated chains
+		//const updatedChains = { ...chains };
+		// Update the specific component's data in updatedChains here
+		//onDataChange(updatedChains);
+	}
 
 	function renderComponent(
 		componentDef: ComponentDef,
@@ -33,6 +42,9 @@ function SequencerArea({ chains }: SequencerModuleProps) {
 					index={index}
 					isLastInChain={isLastInChain}
 					key={index}
+					onComponentChange={(newData: any) =>
+						handleComponentChange(index, newData)
+					}
 				/>
 			);
 		}

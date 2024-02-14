@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { EffectProps } from "./BaseEffect";
 import { Chorus } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
-const ChorusEffect: React.FC<EffectProps> = ({
+const ChorusEffect: React.FC<BaseEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,

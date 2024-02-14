@@ -1,9 +1,10 @@
 import React from "react";
-import { EffectProps, useChannels } from "./BaseEffect";
+import { useChannels } from "./BaseEffect";
 import "../../../CSS/EffectArea.scss";
 import "../../../CSS/Areas.scss";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
-export function withBaseEffectInterface<T extends EffectProps>(
+export function withBaseEffectInterface<T extends BaseEffectProps>(
 	WrappedComponent: React.FC<T>
 ) {
 	const BaseEffectInterface: React.FC<T> = (props) => {

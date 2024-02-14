@@ -1,21 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Channel } from "tone";
-
-export interface EffectProps {
-	effectInput?: string;
-	effectOutput?: string;
-	bypassed?: boolean;
-	input?: Channel | null;
-	output?: Channel | null;
-	name?: string;
-}
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
 // Custom hook for managing audio
 export function useChannels({
 	effectInput,
 	effectOutput,
 	bypassed,
-}: EffectProps) {
+}: BaseEffectProps) {
 	const inputRef = useRef<Channel | null>(null);
 	const outputRef = useRef<Channel | null>(null);
 	const bypassChannelRef = useRef<Channel | null>(null);

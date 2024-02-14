@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { EffectProps } from "./BaseEffect";
 import { Chebyshev, Distortion, Filter, FrequencyShifter, Gate } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
-const DistortionEffect: React.FC<EffectProps> = ({
+const DistortionEffect: React.FC<BaseEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { EffectProps } from "./BaseEffect";
 import { FeedbackDelay, Time } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
 import SessionContext from "../../Session/SessionContext";
+import { DelayEffectProps } from "./EffectComponentInterfaces";
 
-const DelayEffect: React.FC<EffectProps> = ({
+const DelayEffect: React.FC<DelayEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,

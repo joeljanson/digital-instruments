@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { EffectProps } from "./BaseEffect";
 import { Convolver } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
 const ir = require("../../../audio/impulse-responses/ir-test4.wav");
 
-const ConvolverEffect: React.FC<EffectProps> = ({
+const ConvolverEffect: React.FC<BaseEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,

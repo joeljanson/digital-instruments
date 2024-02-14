@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { EffectProps } from "./BaseEffect";
 import { Tremolo } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
-const TremoloEffect: React.FC<EffectProps> = ({
+const TremoloEffect: React.FC<BaseEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,

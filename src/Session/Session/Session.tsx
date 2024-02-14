@@ -10,8 +10,6 @@ import TapeMachine from "../Audio-routing/Tape/TapeMachine";
 import InstrumentArea from "../Instruments/InstrumentArea";
 import Navigation from "../../Navigation";
 
-/* TEST CHAIN */
-import testJson from "../../resources/data/test-session.json";
 import { SessionData } from "./SessionInterface";
 import { fetchSessionData } from "../../Database Connections/getSession";
 
@@ -50,7 +48,7 @@ function Session() {
 		async function loadData() {
 			if (sessionId) {
 				const fetchedData = await fetchSessionData(sessionId);
-				console.log(fetchedData);
+				console.log("Sessiondata is :", fetchedData);
 				setSessionData(fetchedData);
 			}
 		}

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { EffectProps } from "./BaseEffect";
 import { StereoWidener } from "tone";
 import { withBaseEffectInterface } from "./BaseEffectInterface";
+import { BaseEffectProps } from "./EffectComponentInterfaces";
 
-const StereoWidenerEffect: React.FC<EffectProps> = ({
+const StereoWidenerEffect: React.FC<BaseEffectProps> = ({
 	effectInput,
 	effectOutput,
 	input,
